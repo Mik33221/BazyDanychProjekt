@@ -16,12 +16,20 @@
 
 <form method="POST">
 	<select name="stan" id="stan">
-		<option value="Złożone">Złożone</option>
-		<option value="Zapłacone">Zapłacone</option>
-		<option value="W realizacji">W realizacji</option>
-		<option value="Spakowane">Spakowane</option>
-		<option value="Wysłane">Wysłane</option>
-		<option value="Dostarczone">Dostarczone</option>
+		@{
+			var opcje = new List<string> { "Złożone", "Zapłacone", "W realizacji", "Spakowane", "Wysłane", "Dostarczone" };
+			foreach (var opcja in opcje)
+			{
+				if (opcja == Model.zamowienieInfo.stan)
+				{
+					@:<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:<option value="@opcja">@opcja</option>
+				}
+			}
+		}
 	</select>
 
 	@if (Model.successMessage.Length > 0)
