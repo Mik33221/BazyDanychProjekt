@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 using Sklep3.Pages.Klient;
 
-namespace Sklep3.Pages.Pracownik
+namespace Sklep3.Pages.Pracownik.Produkty
 {
     public class CreateModel : PageModel
     {
@@ -69,7 +69,7 @@ namespace Sklep3.Pages.Pracownik
             produktInfo.cena = "";
             successMessage = "Poprawnie dodano produkt";
 
-            Response.Redirect("/Produkty/Index");
+            Response.Redirect("/Pracownik/Produkty");
 
         }
     }

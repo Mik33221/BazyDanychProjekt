@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+}
+
+<br />
+<h2>Lista Produktów</h2>
+<a class="btn btn-primary btn-sm" href="/Pracownik">Powrót</a>
+<a class="btn btn-primary btn-sm" href="/Pracownik/Produkty/Create">Nowy</a>
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Nazwa</th>
+			<th>Ilosc</th>
+			<th>Kategoria</th>
+			<th>Platforma</th>
+			<th>Cena</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.ProduktyLista)
+		{
+			<tr>
+				<td>@item.id</td>
+				<td>@item.nazwa</td>
+				<td>@item.ilosc</td>
+				<td>@item.kategoria</td>
+				<td>@item.platforma</td>
+				<td>@item.cena</td>
+				<td>
+					<a class="btn btn-outline-primary btn-sm" href="/Pracownik/Produkty/Edit?id=@item.id">Edytuj</a>
+					<a class="btn btn-outline-danger btn-sm" href="/Pracownik/Produkty/Delete?id=@item.id">Usuń</a>
+
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

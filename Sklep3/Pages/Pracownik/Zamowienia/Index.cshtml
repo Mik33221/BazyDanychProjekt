@@ -1,0 +1,38 @@
+﻿@page
+@model Sklep3.Pages.Pracownik.Zamowienia.IndexModel
+@{
+}
+
+<br />
+<h2>Lista Zamówień</h2>
+<a class="btn btn-primary btn-sm" href="/Pracownik">Powrót</a>
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID Zamówienia</th>
+			<th>Nazwa produktu</th>
+			<th>Ilość</th>
+			<th>Stan</th>
+			<th>Adres</th>
+			<th>Data</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.ZamowieniaLista)
+		{
+			<tr>
+				<td>@item.id</td>
+				<td>@item.nazwaProduktu</td>
+				<td>@item.ilosc</td>
+				<td>@item.stan</td>
+				<td>@item.adres</td>
+				<td>@item.data</td>
+				<td>
+					<a class="btn btn-outline-primary btn-sm" href="/Pracownik/Zamowienia/Edit?id=@item.id">Edytuj</a>
+
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
