@@ -4,7 +4,7 @@
 }
 
 <br />
-<h2>Edytuj Produkt</h2>
+<h2>Edytuj stan zamówienia</h2>
 
 @if (Model.errorMessage.Length > 0)
 {
@@ -15,13 +15,14 @@
 }
 
 <form method="POST">
-	<input type="hidden" name="id" value="@Model.zamowienieInfo.id"/>
-	<div class="row mb-3">
-		<label class="col-sm-3 col-form-label">Stan</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" name="stan" value="@Model.zamowienieInfo.stan" />
-		</div>
-	</div>
+	<select name="stan" id="stan">
+		<option value="Złożone">Złożone</option>
+		<option value="Zapłacone">Zapłacone</option>
+		<option value="W realizacji">W realizacji</option>
+		<option value="Spakowane">Spakowane</option>
+		<option value="Wysłane">Wysłane</option>
+		<option value="Dostarczone">Dostarczone</option>
+	</select>
 
 	@if (Model.successMessage.Length > 0)
 	{
