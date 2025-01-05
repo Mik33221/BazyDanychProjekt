@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 
-namespace Sklep3.Pages.Produkty
+namespace Sklep3.Pages.Klient
 {
     public class IndexModel : PageModel
     {
@@ -15,7 +15,7 @@ namespace Sklep3.Pages.Produkty
                 String connectionString = "Server=localhost;" +
                                           "Database=sklep;" +
                                           "Uid=root;" +
-                                          "Pwd=qwertyuiop;";
+                                          "Pwd=bazunia;";
 
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {

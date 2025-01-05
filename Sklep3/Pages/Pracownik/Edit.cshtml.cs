@@ -2,29 +2,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
+using Sklep3.Pages.Klient;
 
-namespace Sklep3.Pages.Produkty
+namespace Sklep3.Pages.Pracownik
 {
     public class EditModel : PageModel
     {
         public ProduktInfo produktInfo = new ProduktInfo();
-        public String errorMessage = "";
-        public String successMessage = "";
+        public string errorMessage = "";
+        public string successMessage = "";
 
         public void OnGet()
         {
-            String id = Request.Query["id"];
+            string id = Request.Query["id"];
 
             try
             {
-                String connectionString = "Server=localhost;" +
+                string connectionString = "Server=localhost;" +
                                          "Database=sklep;" +
                                          "Uid=root;" +
-                                         "Pwd=qwertyuiop;";
+                                         "Pwd=bazunia;";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "SELECT * FROM produkty_view WHERE idproduktu=@id";
+                    string sql = "SELECT * FROM produkty_view WHERE idproduktu=@id";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
@@ -60,7 +61,7 @@ namespace Sklep3.Pages.Produkty
         }
         public void OnPost()
         {
-            String id = Request.Query["id"];
+            string id = Request.Query["id"];
             produktInfo.nazwa = Request.Form["nazwa"];
             produktInfo.ilosc = Request.Form["ilosc"];
             produktInfo.kategoria = Request.Form["kategoria"];
@@ -77,14 +78,14 @@ namespace Sklep3.Pages.Produkty
 
             try
             {
-                String connectionString = "Server=localhost;" +
+                string connectionString = "Server=localhost;" +
                                          "Database=sklep;" +
                                          "Uid=root;" +
-                                         "Pwd=qwertyuiop;";
+                                         "Pwd=bazunia;";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "UPDATE produkty_view " +
+                    string sql = "UPDATE produkty_view " +
                         "SET nazwa=@nazwa, ilosc=@ilosc, kategoria=@kategoria, platforma=@platforma, cena=@cena " +
                         "WHERE idproduktu=@id";
 

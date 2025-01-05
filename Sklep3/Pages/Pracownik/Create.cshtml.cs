@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
+using Sklep3.Pages.Klient;
 
-namespace Sklep3.Pages.Produkty
+namespace Sklep3.Pages.Pracownik
 {
     public class CreateModel : PageModel
     {
         public ProduktInfo produktInfo = new ProduktInfo();
-        public String errorMessage = "";
-        public String successMessage = "";
+        public string errorMessage = "";
+        public string successMessage = "";
         public void OnGet()
         {
 
         }
 
-        public void OnPost() 
+        public void OnPost()
         {
             produktInfo.nazwa = Request.Form["nazwa"];
             produktInfo.ilosc = Request.Form["ilosc"];
@@ -32,14 +33,14 @@ namespace Sklep3.Pages.Produkty
             //dodaj produkt do bazy danych
             try
             {
-                String connectionString = "Server=localhost;" +
+                string connectionString = "Server=localhost;" +
                                           "Database=sklep;" +
                                           "Uid=root;" +
-                                          "Pwd=qwertyuiop;";
+                                          "Pwd=bazunia;";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "Insert INTO produkty_view" +
+                    string sql = "Insert INTO produkty_view" +
                         "(nazwa, ilosc, kategoria, platforma, cena) VALUES " +
                         "(@nazwa, @ilosc, @kategoria, @platforma, @cena);";
 

@@ -1,11 +1,11 @@
 ﻿@page
-@model Sklep3.Pages.Produkty.IndexModel
+@model Sklep3.Pages.Pracownik.IndexModel
 @{
 }
 
 <br />
 <h2>Lista Produktów</h2>
-<a class="btn btn-primary btn-sm" href="/Produkty/Create">New</a>
+<a class="btn btn-primary btn-sm" href="/Pracownik/Create">New</a>
 <table class="table">
 	<thead>
 		<tr>
@@ -18,7 +18,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach(var item in Model.ProduktyLista)
+		@foreach (var item in Model.ProduktyLista)
 		{
 			<tr>
 				<td>@item.id</td>
@@ -28,9 +28,8 @@
 				<td>@item.platforma</td>
 				<td>@item.cena</td>
 				<td>
-					<a class="btn btn-outline-success btn-sm" href="/Produkty/ToCart?id=@item.id">Do koszyka</a>
-					<a class="btn btn-outline-primary btn-sm" href="/Produkty/Edit?id=@item.id">Edytuj</a>
-					<a class="btn btn-outline-danger btn-sm" href="/Produkty/Delete?id=@item.id">Usuń</a>
+					<a class="btn btn-outline-primary btn-sm" href="/Pracownik/Edit?id=@item.id">Edytuj</a>
+					<a class="btn btn-outline-danger btn-sm" href="/Pracownik/Delete?id=@item.id">Usuń</a>
 
 				</td>
 			</tr>
