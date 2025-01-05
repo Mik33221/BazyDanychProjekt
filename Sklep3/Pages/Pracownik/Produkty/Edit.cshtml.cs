@@ -21,7 +21,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 string connectionString = "Server=localhost;" +
                                          "Database=sklep;" +
                                          "Uid=root;" +
-                                         "Pwd=qwertyuiop;";
+                                         "Pwd=bazunia;";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
@@ -81,7 +81,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 string connectionString = "Server=localhost;" +
                                          "Database=sklep;" +
                                          "Uid=root;" +
-                                         "Pwd=qwertyuiop;";
+                                         "Pwd=bazunia;";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
