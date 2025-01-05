@@ -1,10 +1,91 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Sklep gamingowy";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section text-center py-5 mb-4">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-4">Witaj w świecie gier</h1>
+        <p class="lead mb-4">Odkryj najnowsze tytuły i akcesoria gamingowe w najlepszych cenach</p>
+        <a href="/Klient/Index" class="btn btn-primary btn-lg px-4">Przejdź do sklepu</a>
+    </div>
 </div>
+
+<div class="container">
+    <div class="row g-4 py-5">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-gamepad fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Gry</h3>
+                    <p class="card-text">Szeroki wybór gier na różne platformy: PC, PlayStation, Xbox i Nintendo</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-shipping-fast fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Szybka dostawa</h3>
+                    <p class="card-text">Darmowa dostawa przy zamówieniach powyżej 200 zł</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-headset fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Wsparcie 24/7</h3>
+                    <p class="card-text">Profesjonalna obsługa klienta przez całą dobę</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-percentage text-primary"></i> Promocje</h4>
+                    <p class="card-text">Sprawdź nasze cotygodniowe promocje i wyprzedaże. Oszczędzaj nawet do 70%!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-gift text-primary"></i> Program lojalnościowy</h4>
+                    <p class="card-text">Dołącz do naszego programu i zbieraj punkty przy każdym zakupie!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #6f42c1 0%, #007bff 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-top: -1rem;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .fa-3x {
+            margin-bottom: 1rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/your-code-here.js" crossorigin="anonymous"></script>
+}
