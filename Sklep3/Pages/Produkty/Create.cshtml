@@ -1,0 +1,68 @@
+﻿@page
+@model Sklep3.Pages.Produkty.CreateModel
+@{
+}
+
+<br />
+<h2>Nowy Produkt</h2>
+
+@if(Model.errorMessage.Length > 0){
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		<strong>@Model.errorMessage</strong>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+	</div>
+}
+
+<form method="POST">
+	<div class="row mb-3">
+		<label class="col-sm-3 col-form-label">Nazwa</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" name="nazwa" value="@Model.produktInfo.nazwa"
+		</div>
+	</div>
+	<div class="row mb-3">
+		<label class="col-sm-3 col-form-label">Ilosc</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" name="ilosc" value="@Model.produktInfo.ilosc"
+		</div>
+	</div>
+	<div class="row mb-3">
+		<label class="col-sm-3 col-form-label">Kategoria</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" name="kategoria" value="@Model.produktInfo.kategoria"
+		</div>
+	</div>
+	<div class="row mb-3">
+		<label class="col-sm-3 col-form-label">Platforma</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" name="platforma" value="@Model.produktInfo.platforma"
+		</div>
+	</div>
+	<div class="row mb-3">
+		<label class="col-sm-3 col-form-label">Cena</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" name="cena" value="@Model.produktInfo.cena"
+		</div>
+	</div>
+
+	@if(Model.successMessage.Length > 0){
+<div class="row mb-3">
+	<div class="col-sm-9">
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			<strong>@Model.successMessage</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+		</div>
+	</div>
+</div>
+	}
+
+	<div class="row mb-3">
+		<div class="offset-sm-3 col-sm-3 d-grid">
+			<button type="submit" class="btn-primary">Zatwierdź</button>
+		</div>
+		
+		<div class="col-sm-3 d-grid">
+			<a class="btn btn-outline-primary" href="/" role="button">Anuluj</a>
+		</div>
+	</div>
+</form>
