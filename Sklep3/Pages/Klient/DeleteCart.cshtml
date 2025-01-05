@@ -1,0 +1,39 @@
+﻿@page
+@using MySql.Data.MySqlClient;
+@using System.Text.Json;
+@using Sklep3.Helpers;
+@{
+    try
+    {
+        String id = Request.Query["id"];
+        
+        // Pobierz aktualną zawartość koszyka
+        var cartItems = HttpContext.Session.Get<List<string>>("CartItems") ?? new List<string>();
+        
+        // Usuń produkt z koszyka
+        cartItems.Remove(id);
+        
+        // Zapisz zaktualizowany koszyk w sesji
+        HttpContext.Session.Set("CartItems", cartItems);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Exception: " + ex.ToString());
+    }
+
+    Response.Redirect("/Klient/Cart");
+}
+
+public static class SessionExtensions
+{
+    public static void Set<T>(this ISession session, string key, T value)
+    {
+        session.SetString(key, JsonSerializer.Serialize(value));
+    }
+
+    public static T? Get<T>(this ISession session, string key)
+    {
+        var value = session.GetString(key);
+        return value == null ? default : JsonSerializer.Deserialize<T>(value);
+    }
+}
