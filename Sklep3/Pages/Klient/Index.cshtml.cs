@@ -7,10 +7,15 @@ namespace Sklep3.Pages.Klient
     public class IndexModel : PageModel
     {
         public List<ProduktInfo> ProduktyLista = new List<ProduktInfo>();
+		public List<string> KategorieLista = new List<string>();
+		public List<string> PlatformyLista = new List<string>();
 
-        public void OnGet()
+		public string aktualnaKategoria;
+        public string aktualnaPlatforma;
+
+		public void OnGet()
         {
-            try
+			try
             {
                 String connectionString = "Server=localhost;" +
                                           "Database=sklep;" +
@@ -20,10 +25,27 @@ namespace Sklep3.Pages.Klient
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    String sql = "SELECT * FROM produkty_view";
-                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+					pobierzKategorie(connection);
+					pobierzPlatformy(connection);
+
+					aktualnaKategoria = Request.Query["kategoria"];
+					aktualnaPlatforma = Request.Query["platforma"];
+
+					String sql = zapytanieSQL();
+					
+
+					using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
-                        using (MySqlDataReader reader = command.ExecuteReader())
+						if (!string.IsNullOrEmpty(aktualnaKategoria))
+						{
+							command.Parameters.AddWithValue("@kategoria", aktualnaKategoria);
+						}
+						if (!string.IsNullOrEmpty(aktualnaPlatforma))
+						{
+							command.Parameters.AddWithValue("@platforma", aktualnaPlatforma);
+						}
+
+						using (MySqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -55,6 +77,57 @@ namespace Sklep3.Pages.Klient
                 Console.WriteLine("Exception: " + ex.ToString());
             }
         }
+
+        private void pobierzKategorie(MySqlConnection connection)
+        {
+			string sqlKategorie = "SELECT * FROM kategorie";
+			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
+			{
+				using (MySqlDataReader reader = command.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						KategorieLista.Add(reader.GetString(0));
+					}
+				}
+			}
+		}
+
+        private void pobierzPlatformy(MySqlConnection connection)
+        {
+			string sqlPlatformy = "SELECT * FROM platformy";
+			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
+			{
+				using (MySqlDataReader reader = command.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						PlatformyLista.Add(reader.GetString(0));
+					}
+				}
+			}
+		}
+
+		private string zapytanieSQL()
+		{
+
+			if (string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
+			{
+				return "SELECT * FROM produkty_view";
+			}
+			
+			if (!string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
+			{
+				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria";
+			}
+			
+			if (!string.IsNullOrEmpty(aktualnaKategoria) && !string.IsNullOrEmpty(aktualnaPlatforma))
+			{
+				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria AND platforma = @platforma";
+			}
+
+			return "SELECT * FROM produkty_view";
+		}
     }
 
     public class ProduktInfo
