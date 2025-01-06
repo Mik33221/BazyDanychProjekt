@@ -7,11 +7,15 @@
     {
         String id = Request.Query["id"];
         
-        // Pobierz aktualną zawartość koszyka
-        var cartItems = HttpContext.Session.Get<List<string>>("CartItems") ?? new List<string>();
+        // Pobierz aktualną zawartość koszyka jako List<CartItem>
+        var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems") ?? new List<CartItem>();
         
         // Usuń produkt z koszyka
-        cartItems.Remove(id);
+        var itemToRemove = cartItems.FirstOrDefault(x => x.ProductId == id);
+        if (itemToRemove != null)
+        {
+            cartItems.Remove(itemToRemove);
+        }
         
         // Zapisz zaktualizowany koszyk w sesji
         HttpContext.Session.Set("CartItems", cartItems);
