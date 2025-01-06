@@ -24,7 +24,11 @@
 		@foreach(var item in Model.ProduktyWKoszykuLista)
 		{
 			var quantity = Model.Quantities[item.id];
-			var itemPrice = decimal.Parse(item.cena);
+			decimal itemPrice;
+			if (!decimal.TryParse(item.cena, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out itemPrice))
+			{
+				itemPrice = 0; // Domyślna wartość, jeśli parsowanie się nie powiedzie
+			}
 			var subtotal = itemPrice * quantity;
 			total += subtotal;
 
@@ -32,9 +36,13 @@
 				<td>@item.nazwa</td>
 				<td>@item.ilosc</td>
 				<td>
-					<input type="number" class="form-control form-control-sm" id="quantity-@item.id" 
-						   value="@quantity" min="1" max="@item.ilosc" 
-						   onchange="updateQuantity('@item.id')">
+					<div class="input-group" style="width: 150px;">
+						<button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity('@item.id', -1)">-</button>
+						<input type="number" class="form-control form-control-sm" id="quantity-@item.id" 
+							   value="@quantity" min="1" max="@item.ilosc" 
+							   onchange="updateQuantity('@item.id', 0)">
+						<button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity('@item.id', 1)">+</button>
+					</div>
 				</td>
 				<td>@item.kategoria</td>
 				<td>@item.platforma</td>
@@ -64,18 +72,30 @@
 
 @section Scripts {
 	<script>
-		function updateQuantity(productId) {
+		function updateQuantity(productId, change) {
 			const input = document.getElementById(`quantity-${productId}`);
+			const currentValue = parseInt(input.value);
 			const maxValue = parseInt(input.max);
 			
-			// Walidacja przy ręcznej zmianie
-			if (input.value < 1) input.value = 1;
-			if (input.value > maxValue) input.value = maxValue;
+			if (change === 0) {
+				// Walidacja przy ręcznej zmianie
+				if (input.value < 1) input.value = 1;
+				if (input.value > maxValue) input.value = maxValue;
+			} else {
+				// Zmiana przyciskami +/-
+				const newValue = currentValue + change;
+				if (newValue >= 1 && newValue <= maxValue) {
+					input.value = newValue;
+				} else {
+					return; // Nie wykonuj aktualizacji jeśli wartość jest poza zakresem
+				}
+			}
 
 			// Przygotuj dane formularza
 			const formData = new FormData();
 			formData.append('id', productId);
-			
+			formData.append('quantity', input.value);
+
 			// Wywołaj endpoint do aktualizacji koszyka
 			fetch('/Klient/UpdateCart', {
 				method: 'POST',
