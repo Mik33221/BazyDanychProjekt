@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model Sklep3.Pages.Shared.ProduktyModel
 @{
 }
 
@@ -7,6 +7,55 @@
 <h2>Lista Produktów</h2>
 <a class="btn btn-primary btn-sm" href="/Pracownik">Powrót</a>
 <a class="btn btn-primary btn-sm" href="/Pracownik/Produkty/Create">Nowy</a>
+
+<form method="get" id="filterForm">
+	<!--Filtr kategorii-->
+	<label for="kategoria">Filtruj według kategorii:</label>
+	<select id="kategoria" name="kategoria" class="form-select form-select-sm" onchange="togglePlatformField()">
+		<option value="">Wszystkie</option>
+		@{
+			foreach (var kategoria in Model.KategorieLista)
+			{
+				if (kategoria == Model.aktualnaKategoria)
+				{
+					@:
+					<option value="@kategoria" selected>@kategoria</option>
+				}
+				else
+				{
+					@:
+					<option value="@kategoria">@kategoria</option>
+				}
+			}
+		}
+	</select>
+
+	<!--Filtr platformy-->
+	<div id="platformField" style="display:none; margin-top: 10px;">
+		<label for="platforma">Wybierz platformę:</label>
+		<select id="platforma" name="platforma" class="form-select form-select-sm">
+			<option value="">Wszystkie</option>
+			@{
+				foreach (var platforma in Model.PlatformyLista)
+				{
+					if (platforma == Model.aktualnaPlatforma)
+					{
+						@:
+						<option value="@platforma" selected>@platforma</option>
+					}
+					else
+					{
+						@:
+						<option value="@platforma">@platforma</option>
+					}
+				}
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary btn-sm">Filtruj</button>
+</form>
+
 <table class="table">
 	<thead>
 		<tr>
@@ -37,3 +86,20 @@
 		}
 	</tbody>
 </table>
+
+<script>
+	function togglePlatformField() {
+		const kategoria = document.getElementById("kategoria").value;
+		const platformField = document.getElementById("platformField");
+
+		if (kategoria === "Gry" || kategoria === "Akcesoria") {
+			platformField.style.display = "block";
+		} else {
+			platformField.style.display = "none";
+			document.getElementById("platforma").value = ""; // Resetuj wybór platformy
+		}
+	}
+
+	// Wywołaj funkcję przy załadowaniu strony, aby ustawić widoczność pola platformy
+	togglePlatformField();
+</script>
