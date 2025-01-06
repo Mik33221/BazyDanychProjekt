@@ -4,7 +4,7 @@
 }
 
 <br />
-<h2>Edytuj Produkt</h2>
+<h2>Edytuj stan zamówienia</h2>
 
 @if (Model.errorMessage.Length > 0)
 {
@@ -15,13 +15,22 @@
 }
 
 <form method="POST">
-	<input type="hidden" name="id" value="@Model.zamowienieInfo.id"
-	<div class="row mb-3">
-		<label class="col-sm-3 col-form-label">Stan</label>
-		<div class="col-sm-6">
-			<input type="text" class="form-control" name="stan" value="@Model.zamowienieInfo.stan"
-		</div>
-	</div>
+	<select name="stan" id="stan">
+		@{
+			var opcje = new List<string> { "Złożone", "Zapłacone", "W realizacji", "Spakowane", "Wysłane", "Dostarczone" };
+			foreach (var opcja in opcje)
+			{
+				if (opcja == Model.zamowienieInfo.stan)
+				{
+					@:<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:<option value="@opcja">@opcja</option>
+				}
+			}
+		}
+	</select>
 
 	@if (Model.successMessage.Length > 0)
 	{

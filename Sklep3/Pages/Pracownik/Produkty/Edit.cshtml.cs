@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
-using Sklep3.Pages.Klient;
 
 namespace Sklep3.Pages.Pracownik.Produkty
 {

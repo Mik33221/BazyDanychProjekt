@@ -3,7 +3,33 @@
 @{
 }
 
-<br />
-<h2>Wybierz widok</h2>
-<a class="btn btn-primary btn-sm" href="/Pracownik/Produkty">Lista produktów</a>
-<a class="btn btn-primary btn-sm" href="/Pracownik/Zamowienia">Lista zamówień</a>
+<div class="container">
+    <div class="text-center">
+        <h1 class="mb-4">Wybierz panel</h1>
+        <p class="mb-4">Wybierz jedną z poniższych opcji, aby przejść do odpowiedniego panelu.</p>
+
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-boxes fa-3x mb-3 text-primary"></i>
+                        <h3 class="card-title">Panel listy produktów</h3>
+                        <p class="card-text">Zarządzaj produktami w magazynie.</p>
+                        <a href="/Pracownik/Produkty" class="btn btn-primary">Przejdź</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shopping-cart fa-3x mb-3 text-secondary"></i>
+                        <h3 class="card-title">Panel listy zamówień</h3>
+                        <p class="card-text">Zarządzaj zamówieniami klientów.</p>
+                        <a href="/Pracownik/Zamowienia" class="btn btn-secondary">Przejdź</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
