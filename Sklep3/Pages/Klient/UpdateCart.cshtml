@@ -1,29 +1,4 @@
 @page
-@using Sklep3.Helpers;
+@model Sklep3.Pages.Klient.UpdateCartModel
 @{
-    try
-    {
-        String id = Request.Form["id"];
-        int quantity = int.Parse(Request.Form["quantity"]);
-        
-        if (!string.IsNullOrEmpty(id))
-        {
-            var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems") ?? new List<CartItem>();
-            var existingItem = cartItems.FirstOrDefault(x => x.ProductId == id);
-            
-            if (existingItem != null)
-            {
-                existingItem.Quantity = quantity;
-                HttpContext.Session.Set("CartItems", cartItems);
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("Exception: " + ex.ToString());
-    }
-
-    // Dla żądań AJAX nie przekierowujemy
-    Response.StatusCode = 200;
-    return;
 } 

@@ -38,9 +38,7 @@
 				<td>
 					<div class="input-group" style="width: 150px;">
 						<button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity('@item.id', -1)">-</button>
-						<input type="number" class="form-control form-control-sm" id="quantity-@item.id" 
-							   value="@quantity" min="1" max="@item.ilosc" 
-							   onchange="updateQuantity('@item.id', 0)">
+						<span class="form-control form-control-sm text-center" id="quantity-@item.id">@quantity</span>
 						<button class="btn btn-outline-secondary btn-sm" onclick="updateQuantity('@item.id', 1)">+</button>
 					</div>
 				</td>
@@ -73,38 +71,39 @@
 @section Scripts {
 	<script>
 		function updateQuantity(productId, change) {
-			const input = document.getElementById(`quantity-${productId}`);
-			const currentValue = parseInt(input.value);
-			const maxValue = parseInt(input.max);
+			const quantitySpan = document.getElementById(`quantity-${productId}`);
+			const currentValue = parseInt(quantitySpan.textContent);
 			
-			if (change === 0) {
-				// Walidacja przy ręcznej zmianie
-				if (input.value < 1) input.value = 1;
-				if (input.value > maxValue) input.value = maxValue;
-			} else {
-				// Zmiana przyciskami +/-
-				const newValue = currentValue + change;
-				if (newValue >= 1 && newValue <= maxValue) {
-					input.value = newValue;
-				} else {
-					return; // Nie wykonuj aktualizacji jeśli wartość jest poza zakresem
+			const newValue = currentValue + change;
+			if (newValue >= 1) {
+				// Przygotuj dane formularza
+				const formData = new FormData();
+				formData.append('id', productId);
+				formData.append('quantity', newValue.toString());
+
+				// Debug info
+				console.log('FormData contents:');
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
 				}
+
+				// Wywołaj endpoint do aktualizacji koszyka
+				fetch('/Klient/UpdateCart', {
+					method: 'POST',
+					body: formData
+				})
+				.then(async response => {
+					if (response.ok) {
+						location.reload();
+					} else {
+						const errorText = await response.text();
+						console.error('Update failed:', response.status, errorText);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
 			}
-
-			// Przygotuj dane formularza
-			const formData = new FormData();
-			formData.append('id', productId);
-			formData.append('quantity', input.value);
-
-			// Wywołaj endpoint do aktualizacji koszyka
-			fetch('/Klient/UpdateCart', {
-				method: 'POST',
-				body: formData
-			}).then(response => {
-				if (response.ok) {
-					location.reload();
-				}
-			});
 		}
 	</script>
 }
