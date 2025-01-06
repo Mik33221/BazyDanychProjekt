@@ -14,7 +14,7 @@
 	<select id="kategoria" name="kategoria" class="form-select form-select-sm" onchange="togglePlatformField()">
 		<option value="">Wszystkie</option>
 		@{
-			foreach (var kategoria in Model.KategorieLista)
+			foreach (var kategoria in Model.slownik.kategorieLista)
 			{
 				if (kategoria == Model.aktualnaKategoria)
 				{
@@ -36,7 +36,7 @@
 		<select id="platforma" name="platforma" class="form-select form-select-sm">
 			<option value="">Wszystkie</option>
 			@{
-				foreach (var platforma in Model.PlatformyLista)
+				foreach (var platforma in Model.slownik.platformyLista)
 				{
 					if (platforma == Model.aktualnaPlatforma)
 					{
@@ -68,7 +68,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.ProduktyLista)
+		@foreach (var item in Model.produktyLista)
 		{
 			<tr>
 				<td>@item.id</td>

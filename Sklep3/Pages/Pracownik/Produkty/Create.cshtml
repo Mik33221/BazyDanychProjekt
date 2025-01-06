@@ -29,13 +29,27 @@
 	<div class="row mb-3">
 		<label class="col-sm-3 col-form-label">Kategoria</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" name="kategoria" value="@Model.produktInfo.kategoria"/>
+			<select id="kategoria" name="kategoria" class="form-control" onchange="togglePlatformField()">
+				@{
+					foreach (var kategoria in Model.slownik.kategorieLista)
+					{
+							@:<option value="@kategoria">@kategoria</option>
+					}
+				}
+			</select>
 		</div>
 	</div>
 	<div class="row mb-3">
 		<label class="col-sm-3 col-form-label">Platforma</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" name="platforma" value="@Model.produktInfo.platforma"/>
+			<select id="platforma" name="platforma" class="form-control">
+				@{
+					foreach (var platforma in Model.slownik.platformyLista)
+					{
+							@:<option value="@platforma">@platforma</option>
+					}
+				}
+			</select>
 		</div>
 	</div>
 	<div class="row mb-3">
@@ -66,3 +80,20 @@
 		</div>
 	</div>
 </form>
+
+<script>
+	function togglePlatformField() {
+		const kategoria = document.getElementById("kategoria").value;
+		const platformField = document.getElementById("platformField");
+
+		if (kategoria === "Gry" || kategoria === "Akcesoria") {
+			platforma.disabled = false; // Aktywuj pole select
+		} else {
+			platforma.disabled = true; // Dezaktywuj pole select
+			document.getElementById("platforma").value = ""; // Resetuj wybór platformy
+		}
+	}
+
+	// Wywołaj funkcję przy załadowaniu strony, aby ustawić widoczność pola platformy
+	togglePlatformField();
+</script>

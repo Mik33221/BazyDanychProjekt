@@ -8,12 +8,30 @@ namespace Sklep3.Pages.Pracownik.Produkty
     public class CreateModel : PageModel
     {
         public ProduktInfo produktInfo = new ProduktInfo();
+        public Slownik slownik = new Slownik();
         public string errorMessage = "";
         public string successMessage = "";
         public void OnGet()
         {
+            try
+            {
+                String connectionString = "Server=localhost;" +
+                                          "Database=sklep;" +
+                                          "Uid=root;" +
+                                          "Pwd=bazunia;";
 
-        }
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    slownik.pobierzKategorie(connection);
+                    slownik.pobierzPlatformy(connection);
+                }
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine("Exception: " + ex.ToString());
+			}
+		}
 
         public void OnPost()
         {
@@ -40,7 +58,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = "Insert INTO produkty_view" +
+					string sql = "Insert INTO produkty_view" +
                         "(nazwa, ilosc, kategoria, platforma, cena) VALUES " +
                         "(@nazwa, @ilosc, @kategoria, @platforma, @cena);";
 

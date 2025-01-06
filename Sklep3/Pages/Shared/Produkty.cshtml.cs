@@ -6,9 +6,8 @@ namespace Sklep3.Pages.Shared
 {
 	public class ProduktyModel : PageModel
 	{
-		public List<ProduktInfo> ProduktyLista = new List<ProduktInfo>();
-		public List<string> KategorieLista = new List<string>();
-		public List<string> PlatformyLista = new List<string>();
+		public List<ProduktInfo> produktyLista = new List<ProduktInfo>();
+		public Slownik slownik = new Slownik();
 
 		public string aktualnaKategoria;
 		public string aktualnaPlatforma;
@@ -25,8 +24,8 @@ namespace Sklep3.Pages.Shared
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					pobierzKategorie(connection);
-					pobierzPlatformy(connection);
+					slownik.pobierzKategorie(connection);
+					slownik.pobierzPlatformy(connection);
 
 					aktualnaKategoria = Request.Query["kategoria"];
 					aktualnaPlatforma = Request.Query["platforma"];
@@ -64,7 +63,7 @@ namespace Sklep3.Pages.Shared
 								}
 								produktInfo.cena = "" + reader.GetMySqlDecimal(5);
 
-								ProduktyLista.Add(produktInfo);
+								produktyLista.Add(produktInfo);
 							}
 						}
 					}
@@ -75,36 +74,6 @@ namespace Sklep3.Pages.Shared
 			catch (Exception ex)
 			{
 				Console.WriteLine("Exception: " + ex.ToString());
-			}
-		}
-
-		private void pobierzKategorie(MySqlConnection connection)
-		{
-			string sqlKategorie = "SELECT * FROM kategorie";
-			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
-			{
-				using (MySqlDataReader reader = command.ExecuteReader())
-				{
-					while (reader.Read())
-					{
-						KategorieLista.Add(reader.GetString(0));
-					}
-				}
-			}
-		}
-
-		private void pobierzPlatformy(MySqlConnection connection)
-		{
-			string sqlPlatformy = "SELECT * FROM platformy";
-			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
-			{
-				using (MySqlDataReader reader = command.ExecuteReader())
-				{
-					while (reader.Read())
-					{
-						PlatformyLista.Add(reader.GetString(0));
-					}
-				}
 			}
 		}
 
@@ -138,5 +107,47 @@ namespace Sklep3.Pages.Shared
 		public string kategoria;
 		public string platforma;
 		public string cena;
+	}
+
+	public class Slownik
+	{
+		public List<string> kategorieLista;
+		public List<string> platformyLista;
+
+		public Slownik()
+		{
+			kategorieLista = new List<string>();
+			platformyLista = new List<string>();
+		}
+
+		public void pobierzKategorie(MySqlConnection connection)
+		{
+			string sqlKategorie = "SELECT * FROM kategorie";
+			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
+			{
+				using (MySqlDataReader reader = command.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						kategorieLista.Add(reader.GetString(0));
+					}
+				}
+			}
+		}
+
+		public void pobierzPlatformy(MySqlConnection connection)
+		{
+			string sqlPlatformy = "SELECT * FROM platformy";
+			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
+			{
+				using (MySqlDataReader reader = command.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						platformyLista.Add(reader.GetString(0));
+					}
+				}
+			}
+		}
 	}
 }
