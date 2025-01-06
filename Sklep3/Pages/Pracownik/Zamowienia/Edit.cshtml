@@ -15,7 +15,7 @@
 }
 
 <form method="POST">
-	<select name="stan" id="stan">
+	<select name="stan" id="stan" class="form-select form-select-sm" size="6">
 		@{
 			var opcje = new List<string> { "Złożone", "Zapłacone", "W realizacji", "Spakowane", "Wysłane", "Dostarczone" };
 			foreach (var opcja in opcje)
