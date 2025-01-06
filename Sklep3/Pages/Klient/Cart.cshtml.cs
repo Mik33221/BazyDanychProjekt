@@ -11,7 +11,7 @@ namespace Sklep3.Pages.Klient
         public int Quantity { get; set; }
     }
 
-    public class Index1Model : PageModel
+    public class CartModel : PageModel
     {
         public List<ProduktInfo> ProduktyWKoszykuLista = new List<ProduktInfo>();
         public Dictionary<string, int> Quantities = new Dictionary<string, int>();
