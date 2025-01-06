@@ -15,7 +15,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 string connectionString = "Server=localhost;" +
                                           "Database=sklep;" +
                                           "Uid=root;" +
-                                          "Pwd=bazunia;";
+                                          "Pwd=bazunia;";     
 
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {

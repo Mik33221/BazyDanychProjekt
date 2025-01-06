@@ -5,13 +5,20 @@ using Sklep3.Helpers;
 
 namespace Sklep3.Pages.Klient
 {
+    public class CartItem
+    {
+        public string ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
+
     public class Index1Model : PageModel
     {
         public List<ProduktInfo> ProduktyWKoszykuLista = new List<ProduktInfo>();
+        public Dictionary<string, int> Quantities = new Dictionary<string, int>();
         
         public void OnGet()
         {
-            var cartItems = HttpContext.Session.Get<List<string>>("CartItems") ?? new List<string>();
+            var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems") ?? new List<CartItem>();
             
             if (cartItems.Any())
             {
@@ -21,7 +28,7 @@ namespace Sklep3.Pages.Klient
                     using (MySqlConnection connection = new MySqlConnection(connectionString))
                     {
                         connection.Open();
-                        String sql = "SELECT * FROM produkty_view WHERE idproduktu IN (" + string.Join(",", cartItems) + ")";
+                        String sql = "SELECT * FROM produkty_view WHERE idproduktu IN (" + string.Join(",", cartItems.Select(x => x.ProductId)) + ")";
                         using (MySqlCommand command = new MySqlCommand(sql, connection))
                         {
                             using (MySqlDataReader reader = command.ExecuteReader())
@@ -37,6 +44,9 @@ namespace Sklep3.Pages.Klient
                                     produktInfo.cena = "" + reader.GetMySqlDecimal(5);
 
                                     ProduktyWKoszykuLista.Add(produktInfo);
+                                    
+                                    var cartItem = cartItems.First(x => x.ProductId == produktInfo.id);
+                                    Quantities[produktInfo.id] = cartItem.Quantity;
                                 }
                             }
                         }

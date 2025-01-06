@@ -1,0 +1,50 @@
+@page
+@using Sklep3.Helpers;
+@{
+    // Obsługa zarówno GET jak i POST
+    var method = Request.Method;
+    try
+    {
+        String id = "";
+        int quantity = 0;
+
+        if (method == "POST")
+        {
+            id = Request.Form["id"].ToString();
+            quantity = int.Parse(Request.Form["quantity"].ToString());
+        }
+        else
+        {
+            id = Request.Query["id"];
+            quantity = int.Parse(Request.Query["quantity"]);
+        }
+        
+        if (!string.IsNullOrEmpty(id))
+        {
+            var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems") ?? new List<CartItem>();
+            var existingItem = cartItems.FirstOrDefault(x => x.ProductId == id);
+            
+            if (existingItem != null)
+            {
+                existingItem.Quantity = quantity;
+            }
+            
+            HttpContext.Session.Set("CartItems", cartItems);
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Exception: " + ex.ToString());
+    }
+
+    if (method == "POST")
+    {
+        // Dla żądań AJAX nie przekierowujemy
+        Response.StatusCode = 200;
+        return;
+    }
+    else
+    {
+        Response.Redirect("/Klient/Cart");
+    }
+} 

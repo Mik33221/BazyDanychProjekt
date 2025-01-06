@@ -2,36 +2,91 @@
 @model Sklep3.Pages.Klient.Index1Model
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
+    decimal total = 0;
 }
 <br />
 <h2>Koszyk</h2>
 <a class="btn btn-primary btn-sm" href="/Klient">Wróć</a>
-<a class="btn btn-primary btn-sm" href="/Klient">Zlóż zamówienie</a>
 <table class="table">
 	<thead>
 		<tr>
 			<th>ID</th>
 			<th>Nazwa</th>
-			<th>Ilosc</th>
+			<th>Ilość w magazynie</th>
+			<th>Ilość w koszyku</th>
 			<th>Kategoria</th>
 			<th>Platforma</th>
 			<th>Cena</th>
+			<th>Suma</th>
+			<th>Akcje</th>
 		</tr>
 	</thead>
 	<tbody>
 		@foreach(var item in Model.ProduktyWKoszykuLista)
 		{
+			var quantity = Model.Quantities[item.id];
+			var itemPrice = decimal.Parse(item.cena);
+			var subtotal = itemPrice * quantity;
+			total += subtotal;
+
 			<tr>
 				<td>@item.id</td>
 				<td>@item.nazwa</td>
 				<td>@item.ilosc</td>
+				<td>
+					<input type="number" class="form-control form-control-sm" id="quantity-@item.id" 
+						   value="@quantity" min="1" max="@item.ilosc" 
+						   onchange="updateQuantity('@item.id')">
+				</td>
 				<td>@item.kategoria</td>
 				<td>@item.platforma</td>
-				<td>@item.cena</td>
+				<td>@item.cena zł</td>
+				<td>@subtotal.ToString("0.00") zł</td>
 				<td>
-					<a class="btn btn-outline-success btn-sm" href="/Klient/DeleteCart?id=@item.id">Usuń z koszyka</a>
+					<a class="btn btn-outline-danger btn-sm" href="/Klient/DeleteCart?id=@item.id">Usuń</a>
 				</td>
 			</tr>
 		}
 	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="7" class="text-end"><strong>Suma całkowita:</strong></td>
+			<td><strong>@total.ToString("0.00") zł</strong></td>
+			<td></td>
+		</tr>
+	</tfoot>
 </table>
+
+@if (Model.ProduktyWKoszykuLista.Any())
+{
+	<div class="text-end mt-3">
+		<a class="btn btn-success" href="/Klient/Checkout">Złóż zamówienie</a>
+	</div>
+}
+
+@section Scripts {
+	<script>
+		function updateQuantity(productId) {
+			const input = document.getElementById(`quantity-${productId}`);
+			const maxValue = parseInt(input.max);
+			
+			// Walidacja przy ręcznej zmianie
+			if (input.value < 1) input.value = 1;
+			if (input.value > maxValue) input.value = maxValue;
+
+			// Przygotuj dane formularza
+			const formData = new FormData();
+			formData.append('id', productId);
+			
+			// Wywołaj endpoint do aktualizacji koszyka
+			fetch('/Klient/UpdateCart', {
+				method: 'POST',
+				body: formData
+			}).then(response => {
+				if (response.ok) {
+					location.reload();
+				}
+			});
+		}
+	</script>
+}

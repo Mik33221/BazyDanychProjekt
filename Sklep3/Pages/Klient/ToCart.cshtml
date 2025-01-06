@@ -1,5 +1,4 @@
 ﻿@page
-@using System.Text.Json;
 @using Sklep3.Helpers;
 @{
     try
@@ -8,16 +7,18 @@
         
         if (!string.IsNullOrEmpty(id))
         {
-            // Pobierz aktualną zawartość koszyka
-            var cartItems = HttpContext.Session.Get<List<string>>("CartItems") ?? new List<string>();
+            var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems") ?? new List<CartItem>();
+            var existingItem = cartItems.FirstOrDefault(x => x.ProductId == id);
             
-            // Dodaj nowy produkt do koszyka
-            if (!cartItems.Contains(id))
+            if (existingItem == null)
             {
-                cartItems.Add(id);
+                cartItems.Add(new CartItem { ProductId = id, Quantity = 1 });
+            }
+            else
+            {
+                existingItem.Quantity++;
             }
             
-            // Zapisz zaktualizowany koszyk w sesji
             HttpContext.Session.Set("CartItems", cartItems);
         }
     }
