@@ -45,7 +45,8 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 produktInfo.kategoria.Length == 0 || produktInfo.cena.Length == 0)
             {
                 errorMessage = "Wszystkie pola są wymagane";
-                return;
+				OnGet(); // Wczytaj ponownie słowniki
+				return;
             }
 
             //dodaj produkt do bazy danych
