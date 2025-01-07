@@ -53,56 +53,32 @@ namespace Sklep3.Pages.Klient
                     {
                         try
                         {   
-                            if (!czyKlientIstnieje(connection, transaction))
+                            // 0. Dodanie klienta do bazy
+                            zamowienie.idKlienta = pobierzIDklienta(connection, transaction);
+                            if (!czyKlientIstnieje(zamowienie.idKlienta))
                             {
-                                if(czyMailIstnieje(connection, transaction))
+                                zamowienie.idKlienta = pobierzIDklientaMail(connection, transaction);
+                                if(czyKlientIstnieje(zamowienie.idKlienta))
                                 {
                                     errorMessage = "Ten mail był podany przez innego klienta";
                                     return;
                                 }
 
                                 dodajKlienta(connection, transaction);
+                                zamowienie.idKlienta = pobierzOstatniWstawionyIndeks(connection, transaction);
                             }
-
                             // 1. Utwórz zamówienie
-                            string sqlZamowienie = "INSERT INTO zamowienia (idklienta, stan, adres, datazłożenia) VALUES (@idklienta, @stan, @adres, @data)";
-                            using (MySqlCommand cmd = new MySqlCommand(sqlZamowienie, connection, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@idklienta", zamowienie.idKlienta);
-                                cmd.Parameters.AddWithValue("@stan", "Złożone");
-                                cmd.Parameters.AddWithValue("@adres", zamowienie.adres);
-                                cmd.Parameters.AddWithValue("@data", DateTime.Now);
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            // Pobierz ID utworzonego zamówienia
-                            long idZamowienia;
-                            using (MySqlCommand cmd = new MySqlCommand("SELECT LAST_INSERT_ID()", connection, transaction))
-                            {
-                                idZamowienia = Convert.ToInt64(cmd.ExecuteScalar());
-                            }
+                            utworzZamowienie(connection, transaction);
+                            zamowienie.idZamowienia = pobierzOstatniWstawionyIndeks(connection, transaction);
 
                             // 2. Dodaj produkty do zamówienia i zaktualizuj stany magazynowe
                             foreach (var item in cartItems)
                             {
                                 // Dodaj produkt do zamówienia
-                                string sqlZamowienieProdukty = "INSERT INTO zamowienia_produkty (idzamowienia, idproduktu, ilosc) VALUES (@idzamowienia, @idproduktu, @ilosc)";
-                                using (MySqlCommand cmd = new MySqlCommand(sqlZamowienieProdukty, connection, transaction))
-                                {
-                                    cmd.Parameters.AddWithValue("@idzamowienia", idZamowienia);
-                                    cmd.Parameters.AddWithValue("@idproduktu", item.ProductId);
-                                    cmd.Parameters.AddWithValue("@ilosc", item.Quantity);
-                                    cmd.ExecuteNonQuery();
-                                }
+                                dodajProdukt(connection, transaction, item);
 
                                 // Zaktualizuj stan magazynowy
-                                string sqlUpdateStanMagazynowy = "UPDATE produkty SET ilosc = ilosc - @ilosc WHERE idproduktu = @idproduktu";
-                                using (MySqlCommand cmd = new MySqlCommand(sqlUpdateStanMagazynowy, connection, transaction))
-                                {
-                                    cmd.Parameters.AddWithValue("@ilosc", item.Quantity);
-                                    cmd.Parameters.AddWithValue("@idproduktu", item.ProductId);
-                                    cmd.ExecuteNonQuery();
-                                }
+                                zaktualizujMagazyn(connection, transaction, item);
                             }
 
                             // Zatwierdź transakcję
@@ -130,9 +106,8 @@ namespace Sklep3.Pages.Klient
             }
         }
 
-        private bool czyKlientIstnieje(MySqlConnection connection, MySqlTransaction transaction)
+        public int pobierzIDklienta(MySqlConnection connection, MySqlTransaction transaction)
         {
-            // Sprawdź czy klient istnieje
             string sqlKlient = "SELECT idKlienta FROM klienci WHERE nazwisko = @nazwisko AND imie = @imie AND mail = @mail";
             int idKlienta = -1;
             using (MySqlCommand cmd = new MySqlCommand(sqlKlient, connection, transaction))
@@ -150,15 +125,17 @@ namespace Sklep3.Pages.Klient
                     }
                 }
             }
-            // Klient nie istnieje
+           return idKlienta;
+        }
+
+        public bool czyKlientIstnieje(int idKlienta)
+        {
             if (idKlienta == -1)
                 return false;
-            // Klient istnieje
-            zamowienie.idKlienta = idKlienta;
             return true;
         }
 
-        private bool czyMailIstnieje(MySqlConnection connection, MySqlTransaction transaction)
+        public int pobierzIDklientaMail(MySqlConnection connection, MySqlTransaction transaction)
         {
             // Sprawdź czy mail istnieje
             string sqlKlient = "SELECT idKlienta FROM klienci WHERE mail = @mail";
@@ -176,14 +153,10 @@ namespace Sklep3.Pages.Klient
                     }
                 }
             }
-            // Klient nie istnieje
-            if (idKlienta == -1)
-                return false;
-            // Klient istnieje
-            return true;
+            return idKlienta;
         }
 
-        private void dodajKlienta(MySqlConnection connection, MySqlTransaction transaction)
+        public void dodajKlienta(MySqlConnection connection, MySqlTransaction transaction)
         {
             // Utwórz klienta
             string sqlKlient = "INSERT INTO klienci (nazwisko, imie, mail) VALUES (@nazwisko, @imie, @mail)";
@@ -194,17 +167,55 @@ namespace Sklep3.Pages.Klient
                 cmd.Parameters.AddWithValue("@mail", zamowienie.mail);
                 cmd.ExecuteNonQuery();
             }
-
-            // Pobierz ID utworzonego klienta
+        }
+        public int pobierzOstatniWstawionyIndeks(MySqlConnection connection, MySqlTransaction transaction)
+        {
             using (MySqlCommand cmd = new MySqlCommand("SELECT LAST_INSERT_ID()", connection, transaction))
             {
-                zamowienie.idKlienta = Convert.ToInt32(cmd.ExecuteScalar());
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        public void utworzZamowienie(MySqlConnection connection, MySqlTransaction transaction)
+        {
+            string sqlZamowienie = "INSERT INTO zamowienia (idklienta, stan, adres, datazłożenia) VALUES (@idklienta, @stan, @adres, @data)";
+            using (MySqlCommand cmd = new MySqlCommand(sqlZamowienie, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@idklienta", zamowienie.idKlienta);
+                cmd.Parameters.AddWithValue("@stan", "Złożone");
+                cmd.Parameters.AddWithValue("@adres", zamowienie.adres);
+                cmd.Parameters.AddWithValue("@data", DateTime.Now);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void dodajProdukt(MySqlConnection connection, MySqlTransaction transaction, CartItem item)
+        {
+            string sqlZamowienieProdukty = "INSERT INTO zamowienia_produkty (idzamowienia, idproduktu, ilosc) VALUES (@idzamowienia, @idproduktu, @ilosc)";
+            using (MySqlCommand cmd = new MySqlCommand(sqlZamowienieProdukty, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@idzamowienia", zamowienie.idZamowienia);
+                cmd.Parameters.AddWithValue("@idproduktu", item.ProductId);
+                cmd.Parameters.AddWithValue("@ilosc", item.Quantity);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void zaktualizujMagazyn(MySqlConnection connection, MySqlTransaction transaction, CartItem item)
+        {
+            string sqlUpdateStanMagazynowy = "UPDATE produkty SET ilosc = ilosc - @ilosc WHERE idproduktu = @idproduktu";
+            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateStanMagazynowy, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@ilosc", item.Quantity);
+                cmd.Parameters.AddWithValue("@idproduktu", item.ProductId);
+                cmd.ExecuteNonQuery();
             }
         }
     }
 
     public class Zamowienie
     {
+        public int idZamowienia;
         public int idKlienta;
         public string imie;
         public string nazwisko;
