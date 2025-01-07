@@ -33,7 +33,16 @@
 				@{
 					foreach (var kategoria in Model.slownik.kategorieLista)
 					{
-							@:<option value="@kategoria">@kategoria</option>
+						if (kategoria == Model.produktInfo.kategoria)
+						{
+							@:
+							<option value="@kategoria" selected>@kategoria</option>
+						}
+						else
+						{
+							@:
+							<option value="@kategoria">@kategoria</option>
+						}
 					}
 				}
 			</select>
@@ -46,7 +55,16 @@
 				@{
 					foreach (var platforma in Model.slownik.platformyLista)
 					{
-							@:<option value="@platforma">@platforma</option>
+						if (platforma == Model.produktInfo.kategoria)
+						{
+							@:
+							<option value="@platforma" selected>@platforma</option>
+						}
+						else
+						{
+							@:
+							<option value="@platforma">@platforma</option>
+						}
 					}
 				}
 			</select>

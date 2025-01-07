@@ -13,24 +13,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
         public string successMessage = "";
         public void OnGet()
         {
-            try
-            {
-                String connectionString = "Server=localhost;" +
-                                          "Database=sklep;" +
-                                          "Uid=root;" +
-                                          "Pwd=bazunia;";
-
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
-                {
-                    connection.Open();
-                    slownik.pobierzKategorie(connection);
-                    slownik.pobierzPlatformy(connection);
-                }
-            }
-			catch (Exception ex)
-			{
-				Console.WriteLine("Exception: " + ex.ToString());
-			}
+            slownik.pobierzSlowniki();
 		}
 
         public void OnPost()
@@ -45,7 +28,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 produktInfo.kategoria.Length == 0 || produktInfo.cena.Length == 0)
             {
                 errorMessage = "Wszystkie pola są wymagane";
-				OnGet(); // Wczytaj ponownie słowniki
+                slownik.pobierzSlowniki(); // Wczytaj ponownie słowniki
 				return;
             }
 

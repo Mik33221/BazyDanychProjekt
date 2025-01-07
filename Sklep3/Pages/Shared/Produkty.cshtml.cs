@@ -14,6 +14,8 @@ namespace Sklep3.Pages.Shared
 
 		public void OnGet()
 		{
+			slownik.pobierzSlowniki();
+
 			try
 			{
 				String connectionString = "Server=localhost;" +
@@ -24,8 +26,6 @@ namespace Sklep3.Pages.Shared
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					slownik.pobierzKategorie(connection);
-					slownik.pobierzPlatformy(connection);
 
 					aktualnaKategoria = Request.Query["kategoria"];
 					aktualnaPlatforma = Request.Query["platforma"];
@@ -120,7 +120,29 @@ namespace Sklep3.Pages.Shared
 			platformyLista = new List<string>();
 		}
 
-		public void pobierzKategorie(MySqlConnection connection)
+		public void pobierzSlowniki()
+		{
+			try
+			{
+				String connectionString = "Server=localhost;" +
+										  "Database=sklep;" +
+										  "Uid=root;" +
+										  "Pwd=bazunia;";
+
+				using (MySqlConnection connection = new MySqlConnection(connectionString))
+				{
+					connection.Open();
+					pobierzKategorie(connection);
+					pobierzPlatformy(connection);
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Exception: " + ex.ToString());
+			}
+		}
+
+		private void pobierzKategorie(MySqlConnection connection)
 		{
 			string sqlKategorie = "SELECT * FROM kategorie";
 			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
@@ -135,7 +157,7 @@ namespace Sklep3.Pages.Shared
 			}
 		}
 
-		public void pobierzPlatformy(MySqlConnection connection)
+		private void pobierzPlatformy(MySqlConnection connection)
 		{
 			string sqlPlatformy = "SELECT * FROM platformy";
 			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
