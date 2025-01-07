@@ -1,5 +1,6 @@
 using Sklep3.Pages.Klient;
 using MySql.Data.MySqlClient;
+using Sklep3.Pages.Shared;
 
 
 namespace Sklep3.Tests
@@ -123,6 +124,23 @@ namespace Sklep3.Tests
 
             // Assert
             Assert.NotEqual(0, res); 
+        }
+
+        [Fact]
+        public void sprawdzPoprawnoscDanychTest()
+        {
+            // Arrange
+            ProduktInfo produktInfo = new ProduktInfo();
+            produktInfo.nazwa = "TEST";
+            produktInfo.kategoria = "Konsola";
+            produktInfo.ilosc = "21";
+            produktInfo.cena = "21.21";
+
+            // Act
+            string error = produktInfo.sprawdzPoprawnoscDanych();
+
+            // Assert
+            Assert.Equal("", error);
         }
     }
 }
