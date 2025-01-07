@@ -11,6 +11,8 @@ namespace Sklep3.Pages.Shared
 
 		public string aktualnaKategoria;
 		public string aktualnaPlatforma;
+		public string aktualneSortowanie;
+		public string aktualnyKierunekSortowania;
 
 		public void OnGet()
 		{
@@ -29,6 +31,8 @@ namespace Sklep3.Pages.Shared
 
 					aktualnaKategoria = Request.Query["kategoria"];
 					aktualnaPlatforma = Request.Query["platforma"];
+					aktualneSortowanie = Request.Query["sortowanie"];
+					aktualnyKierunekSortowania = Request.Query["kierunek"];
 
 					String sql = zapytanieSQL();
 
@@ -36,13 +40,17 @@ namespace Sklep3.Pages.Shared
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
 						if (!string.IsNullOrEmpty(aktualnaKategoria))
-						{
 							command.Parameters.AddWithValue("@kategoria", aktualnaKategoria);
-						}
+
 						if (!string.IsNullOrEmpty(aktualnaPlatforma))
-						{
 							command.Parameters.AddWithValue("@platforma", aktualnaPlatforma);
-						}
+
+						if (!string.IsNullOrEmpty(aktualneSortowanie))
+							command.Parameters.AddWithValue("@sortowanie", aktualneSortowanie);
+
+						if (!string.IsNullOrEmpty(aktualnyKierunekSortowania))
+							command.Parameters.AddWithValue("@kierunek", aktualnyKierunekSortowania);
+						
 
 						using (MySqlDataReader reader = command.ExecuteReader())
 						{
@@ -79,23 +87,22 @@ namespace Sklep3.Pages.Shared
 
 		private string zapytanieSQL()
 		{
+			string sql = "SELECT * FROM produkty_view";
 
-			if (string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
-			{
-				return "SELECT * FROM produkty_view";
-			}
+			if (!string.IsNullOrEmpty(aktualnaKategoria))
+				sql += " WHERE kategoria = @kategoria";
 
-			if (!string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
-			{
-				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria";
-			}
+			if (!string.IsNullOrEmpty(aktualnaPlatforma))
+				sql += " AND platforma = @platforma";
 
-			if (!string.IsNullOrEmpty(aktualnaKategoria) && !string.IsNullOrEmpty(aktualnaPlatforma))
-			{
-				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria AND platforma = @platforma";
-			}
+			if (!string.IsNullOrEmpty(aktualneSortowanie))
+				sql += " ORDER BY " + aktualneSortowanie;
 
-			return "SELECT * FROM produkty_view";
+			if (aktualnyKierunekSortowania == "Malejąco")
+				sql += " DESC";
+
+			Console.WriteLine(sql);
+			return sql;
 		}
 	}
 

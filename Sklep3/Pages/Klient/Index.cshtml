@@ -37,7 +37,6 @@
 	<div id="platformField" style="display:none; margin-top: 10px;">
 		<label for="platforma">Wybierz platformę:</label>
 		<select id="platforma" name="platforma" class="form-select form-select-sm">
-			<option value="">Wszystkie</option>
 			@{
 				foreach (var platforma in Model.slownik.platformyLista)
 				{
@@ -55,6 +54,47 @@
 			}
 		</select>
 	</div>
+
+	<!--Sortowanie-->
+	<label for="sortowanie">Sortowanie:</label>
+	<select id="sortowanie" name="sortowanie" class="form-select form-select-sm">
+		@{
+			var sort = new List<string> { "nazwa", "kategoria", "cena" };
+			foreach (var opcja in sort)
+			{
+				if (opcja == Model.aktualneSortowanie)
+				{
+					@:
+					<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:
+					<option value="@opcja">@opcja</option>
+				}
+			}
+		}
+	</select>
+
+	<!--Kierunek sortowania-->
+	<select id="kierunek" name="kierunek" class="form-select form-select-sm">
+		@{
+			var kier = new List<string> { "Rosnąco", "Malejąco" };
+			foreach (var opcja in kier)
+			{
+				if (opcja == Model.aktualnyKierunekSortowania)
+				{
+					@:
+					<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:
+					<option value="@opcja">@opcja</option>
+				}
+			}
+		}
+	</select>
 
 	<button type="submit" class="btn btn-primary btn-sm">Filtruj</button>
 </form>
