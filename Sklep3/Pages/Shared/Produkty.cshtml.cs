@@ -36,7 +36,6 @@ namespace Sklep3.Pages.Shared
 
 					String sql = zapytanieSQL();
 
-
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
 						if (!string.IsNullOrEmpty(aktualnaKategoria))
@@ -96,10 +95,11 @@ namespace Sklep3.Pages.Shared
 				sql += " AND platforma = @platforma";
 
 			if (!string.IsNullOrEmpty(aktualneSortowanie))
+			{
 				sql += " ORDER BY " + aktualneSortowanie;
-
-			if (aktualnyKierunekSortowania == "Malejąco")
-				sql += " DESC";
+				if (aktualnyKierunekSortowania == "Malejąco")
+					sql += " DESC";
+			}
 
 			Console.WriteLine(sql);
 			return sql;

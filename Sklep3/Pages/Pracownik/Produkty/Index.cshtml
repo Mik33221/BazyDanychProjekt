@@ -57,7 +57,7 @@
 	<label for="sortowanie">Sortowanie:</label>
 	<select id="sortowanie" name="sortowanie" class="form-select form-select-sm">
 		@{
-			var sort = new List<string> { "nazwa", "kategoria", "cena" };
+			var sort = new List<string> { "idproduktu", "nazwa", "kategoria", "cena" };
 			foreach (var opcja in sort)
 			{
 				if (opcja == Model.aktualneSortowanie)

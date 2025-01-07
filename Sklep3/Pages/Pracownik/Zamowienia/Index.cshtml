@@ -7,6 +7,52 @@
 <br />
 <h2>Lista Zamówień</h2>
 <a class="btn btn-primary btn-sm" href="/Pracownik">Powrót</a>
+
+<form method="get" id="filterForm">
+	<!--Sortowanie-->
+	<label for="sortowanie">Sortowanie:</label>
+	<select id="sortowanie" name="sortowanie" class="form-select form-select-sm">
+		@{
+			var sort = new List<string> { "id_zamówienia", "stan", "data" };
+			foreach (var opcja in sort)
+			{
+				if (opcja == Model.aktualneSortowanie)
+				{
+					@:
+					<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:
+					<option value="@opcja">@opcja</option>
+				}
+			}
+		}
+	</select>
+
+	<!--Kierunek sortowania-->
+	<select id="kierunek" name="kierunek" class="form-select form-select-sm">
+		@{
+			var kier = new List<string> { "Rosnąco", "Malejąco" };
+			foreach (var opcja in kier)
+			{
+				if (opcja == Model.aktualnyKierunekSortowania)
+				{
+					@:
+					<option value="@opcja" selected>@opcja</option>
+				}
+				else
+				{
+					@:
+					<option value="@opcja">@opcja</option>
+				}
+			}
+		}
+	</select>
+
+	<button type="submit" class="btn btn-primary btn-sm">Filtruj</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
