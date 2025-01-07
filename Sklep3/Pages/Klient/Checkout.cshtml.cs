@@ -7,6 +7,7 @@ namespace Sklep3.Pages.Klient
 {
     public class CheckoutModel : PageModel
     {
+        public Zamowienie zamowienie = new Zamowienie();
         public string errorMessage = "";
         public string successMessage = "";
 
@@ -21,12 +22,16 @@ namespace Sklep3.Pages.Klient
 
         public void OnPost()
         {
-            string adres = Request.Form["adres"];
+            zamowienie.adres = Request.Form["adres"];
             var cartItems = HttpContext.Session.Get<List<CartItem>>("CartItems");
+            
+            zamowienie.imie = Request.Form["imie"];
+            zamowienie.nazwisko = Request.Form["nazwisko"];
+            zamowienie.mail = Request.Form["mail"];
 
-            if (string.IsNullOrEmpty(adres))
+            if (zamowienie.adres.Length == 0 || zamowienie.imie.Length == 0 || zamowienie.nazwisko.Length == 0 || zamowienie.mail.Length == 0)
             {
-                errorMessage = "Proszę podać adres dostawy";
+                errorMessage = "Wszystkie pola są wymagane";
                 return;
             }
 
@@ -47,14 +52,25 @@ namespace Sklep3.Pages.Klient
                     using (MySqlTransaction transaction = connection.BeginTransaction())
                     {
                         try
-                        {
+                        {   
+                            if (!czyKlientIstnieje(connection, transaction))
+                            {
+                                if(czyMailIstnieje(connection, transaction))
+                                {
+                                    errorMessage = "Ten mail był podany przez innego klienta";
+                                    return;
+                                }
+
+                                dodajKlienta(connection, transaction);
+                            }
+
                             // 1. Utwórz zamówienie
                             string sqlZamowienie = "INSERT INTO zamowienia (idklienta, stan, adres, datazłożenia) VALUES (@idklienta, @stan, @adres, @data)";
                             using (MySqlCommand cmd = new MySqlCommand(sqlZamowienie, connection, transaction))
                             {
-                                cmd.Parameters.AddWithValue("@idklienta", 1); // TODO: Dodać prawdziwe ID klienta
+                                cmd.Parameters.AddWithValue("@idklienta", zamowienie.idKlienta);
                                 cmd.Parameters.AddWithValue("@stan", "Złożone");
-                                cmd.Parameters.AddWithValue("@adres", adres);
+                                cmd.Parameters.AddWithValue("@adres", zamowienie.adres);
                                 cmd.Parameters.AddWithValue("@data", DateTime.Now);
                                 cmd.ExecuteNonQuery();
                             }
@@ -113,5 +129,86 @@ namespace Sklep3.Pages.Klient
                 return;
             }
         }
+
+        private bool czyKlientIstnieje(MySqlConnection connection, MySqlTransaction transaction)
+        {
+            // Sprawdź czy klient istnieje
+            string sqlKlient = "SELECT idKlienta FROM klienci WHERE nazwisko = @nazwisko AND imie = @imie AND mail = @mail";
+            int idKlienta = -1;
+            using (MySqlCommand cmd = new MySqlCommand(sqlKlient, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@nazwisko", zamowienie.nazwisko);
+                cmd.Parameters.AddWithValue("@imie", zamowienie.imie);
+                cmd.Parameters.AddWithValue("@mail", zamowienie.mail);
+                cmd.ExecuteNonQuery();
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        idKlienta = reader.GetInt32(0);
+                    }
+                }
+            }
+            // Klient nie istnieje
+            if (idKlienta == -1)
+                return false;
+            // Klient istnieje
+            zamowienie.idKlienta = idKlienta;
+            return true;
+        }
+
+        private bool czyMailIstnieje(MySqlConnection connection, MySqlTransaction transaction)
+        {
+            // Sprawdź czy mail istnieje
+            string sqlKlient = "SELECT idKlienta FROM klienci WHERE mail = @mail";
+            int idKlienta = -1;
+            using (MySqlCommand cmd = new MySqlCommand(sqlKlient, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@mail", zamowienie.mail);
+                cmd.ExecuteNonQuery();
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        idKlienta = reader.GetInt32(0);
+                    }
+                }
+            }
+            // Klient nie istnieje
+            if (idKlienta == -1)
+                return false;
+            // Klient istnieje
+            return true;
+        }
+
+        private void dodajKlienta(MySqlConnection connection, MySqlTransaction transaction)
+        {
+            // Utwórz klienta
+            string sqlKlient = "INSERT INTO klienci (nazwisko, imie, mail) VALUES (@nazwisko, @imie, @mail)";
+            using (MySqlCommand cmd = new MySqlCommand(sqlKlient, connection, transaction))
+            {
+                cmd.Parameters.AddWithValue("@nazwisko", zamowienie.nazwisko);
+                cmd.Parameters.AddWithValue("@imie", zamowienie.imie);
+                cmd.Parameters.AddWithValue("@mail", zamowienie.mail);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Pobierz ID utworzonego klienta
+            using (MySqlCommand cmd = new MySqlCommand("SELECT LAST_INSERT_ID()", connection, transaction))
+            {
+                zamowienie.idKlienta = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+    }
+
+    public class Zamowienie
+    {
+        public int idKlienta;
+        public string imie;
+        public string nazwisko;
+        public string mail;
+        public string adres;
     }
 } 

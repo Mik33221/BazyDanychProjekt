@@ -16,9 +16,27 @@
 
 <form method="POST">
     <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Imię</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="imie" value="@Model.zamowienie.imie">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Nazwisko</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="nazwisko" value="@Model.zamowienie.nazwisko">
+        </div>
+    </div>
+    <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Adres dostawy</label>
         <div class="col-sm-6">
-            <textarea class="form-control" name="adres" required rows="3"></textarea>
+            <input type="text" class="form-control" name="adres" value="@Model.zamowienie.adres">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Email</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="mail" value="@Model.zamowienie.mail">
         </div>
     </div>
 
