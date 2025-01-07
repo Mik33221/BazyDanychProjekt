@@ -71,10 +71,9 @@ namespace Sklep3.Pages.Pracownik.Produkty
             produktInfo.platforma = Request.Form["platforma"];
             produktInfo.cena = Request.Form["cena"];
 
-            if (produktInfo.nazwa.Length == 0 || produktInfo.ilosc.Length == 0 ||
-                produktInfo.kategoria.Length == 0 || produktInfo.cena.Length == 0)
+            errorMessage = produktInfo.sprawdzPoprawnoscDanych();
+            if (errorMessage.Length > 0)
             {
-                errorMessage = "Wszystkie pola są wymagane";
                 slownik.pobierzSlowniki(); // Wczytaj ponownie słowniki
 				return;
             }
@@ -97,14 +96,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                         command.Parameters.AddWithValue("@nazwa", produktInfo.nazwa);
                         command.Parameters.AddWithValue("@ilosc", produktInfo.ilosc);
                         command.Parameters.AddWithValue("@kategoria", produktInfo.kategoria);
-                        if (produktInfo.platforma.Length == 0)
-                        {
-                            command.Parameters.AddWithValue("@platforma", "");
-                        }
-                        else
-                        {
-                            command.Parameters.AddWithValue("@platforma", produktInfo.platforma);
-                        }
+						command.Parameters.AddWithValue("@platforma", produktInfo.platforma);
                         command.Parameters.AddWithValue("@cena", produktInfo.cena);
                         command.Parameters.AddWithValue("@id", produktInfo.id);
 

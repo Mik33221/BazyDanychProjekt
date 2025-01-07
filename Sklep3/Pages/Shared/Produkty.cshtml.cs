@@ -107,6 +107,32 @@ namespace Sklep3.Pages.Shared
 		public string kategoria;
 		public string platforma;
 		public string cena;
+
+		public string sprawdzPoprawnoscDanych()
+		{
+			string error = "";
+			if (nazwa.Length == 0 || ilosc.Length == 0 || kategoria.Length == 0 || cena.Length == 0)
+				error += "Wszystkie pola są wymagane. ";
+
+			if (!UInt32.TryParse(ilosc, out _))
+				error += "Ilość musi myć liczbą całkowitą dodatnią. ";
+
+
+			if (!decimal.TryParse(cena, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out _) || cena[0] == '-')
+			{
+				error += "Cena musi być liczbą dodatnią z maksymalnie dwoma cyframi po przecinku. ";
+			}
+			else
+			{	
+				cena = cena.Replace(',', '.');
+				string[] parts = cena.Split('.');
+
+				if (parts.Length == 2 && parts[1].Length > 2)
+					error += "Cena musi być liczbą z maksymalnie dwoma cyframi po przecinku. ";
+			}
+
+			return error;
+		}
 	}
 
 	public class Slownik

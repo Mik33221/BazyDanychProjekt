@@ -24,16 +24,15 @@ namespace Sklep3.Pages.Pracownik.Produkty
             produktInfo.platforma = Request.Form["platforma"];
             produktInfo.cena = Request.Form["cena"];
 
-            if (produktInfo.nazwa.Length == 0 || produktInfo.ilosc.Length == 0 ||
-                produktInfo.kategoria.Length == 0 || produktInfo.cena.Length == 0)
-            {
-                errorMessage = "Wszystkie pola są wymagane";
-                slownik.pobierzSlowniki(); // Wczytaj ponownie słowniki
+			errorMessage = produktInfo.sprawdzPoprawnoscDanych();
+			if (errorMessage.Length > 0)
+			{
+				slownik.pobierzSlowniki(); // Wczytaj ponownie słowniki
 				return;
-            }
+			}
 
-            //dodaj produkt do bazy danych
-            try
+			//dodaj produkt do bazy danych
+			try
             {
                 string connectionString = "Server=localhost;" +
                                           "Database=sklep;" +
