@@ -9,11 +9,32 @@
 <a class="btn btn-primary btn-sm" href="/Pracownik">Powrót</a>
 
 <form method="get" id="filterForm">
+	<!--Filtr stanu-->
+	<label for="stan">Filtruj według stanu zamówienia:</label>
+	<select id="stan" name="stan" class="form-select form-select-sm">
+		<option value="">Wszystkie</option>
+		@{
+			foreach (var stan in Model.stany.slownik)
+			{
+				if (stan == Model.aktualnyStan)
+				{
+					@:
+					<option value="@stan" selected>@stan</option>
+				}
+				else
+				{
+					@:
+					<option value="@stan">@stan</option>
+				}
+			}
+		}
+	</select>
+
 	<!--Sortowanie-->
 	<label for="sortowanie">Sortowanie:</label>
 	<select id="sortowanie" name="sortowanie" class="form-select form-select-sm">
 		@{
-			var sort = new List<string> { "id_zamówienia", "stan", "data" };
+			var sort = new List<string> { "id_zamówienia", "nazwa_produktu", "adres", "data" };
 			foreach (var opcja in sort)
 			{
 				if (opcja == Model.aktualneSortowanie)

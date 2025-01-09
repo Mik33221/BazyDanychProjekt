@@ -7,7 +7,8 @@ namespace Sklep3.Pages.Shared
 	public class ProduktyModel : PageModel
 	{
 		public List<ProduktInfo> produktyLista = new List<ProduktInfo>();
-		public Slownik slownik = new Slownik();
+		public Slownik kategorie = new Slownik("kategorie");
+		public Slownik platformy = new Slownik("platformy");
 
 		public string aktualnaKategoria;
 		public string aktualnaPlatforma;
@@ -16,8 +17,6 @@ namespace Sklep3.Pages.Shared
 
 		public void OnGet()
 		{
-			slownik.pobierzSlowniki();
-
 			try
 			{
 				String connectionString = "Server=localhost;" +
@@ -144,16 +143,17 @@ namespace Sklep3.Pages.Shared
 
 	public class Slownik
 	{
-		public List<string> kategorieLista;
-		public List<string> platformyLista;
+		public List<string> slownik;
+        private string baza;
 
-		public Slownik()
+		public Slownik(string baza)
 		{
-			kategorieLista = new List<string>();
-			platformyLista = new List<string>();
+			slownik = new List<string>();
+			this.baza = baza;
+			pobierzSlownik();
 		}
 
-		public void pobierzSlowniki()
+		public void pobierzSlownik()
 		{
 			try
 			{
@@ -165,43 +165,23 @@ namespace Sklep3.Pages.Shared
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					pobierzKategorie(connection);
-					pobierzPlatformy(connection);
-				}
+
+                    string sql = "SELECT * FROM " + baza;
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                slownik.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("Exception: " + ex.ToString());
-			}
-		}
-
-		private void pobierzKategorie(MySqlConnection connection)
-		{
-			string sqlKategorie = "SELECT * FROM kategorie";
-			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
-			{
-				using (MySqlDataReader reader = command.ExecuteReader())
-				{
-					while (reader.Read())
-					{
-						kategorieLista.Add(reader.GetString(0));
-					}
-				}
-			}
-		}
-
-		private void pobierzPlatformy(MySqlConnection connection)
-		{
-			string sqlPlatformy = "SELECT * FROM platformy";
-			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
-			{
-				using (MySqlDataReader reader = command.ExecuteReader())
-				{
-					while (reader.Read())
-					{
-						platformyLista.Add(reader.GetString(0));
-					}
-				}
 			}
 		}
 	}

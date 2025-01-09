@@ -34,7 +34,7 @@
 		<div class="col-sm-6">
 			<select id="kategoria" name="kategoria" class="form-control" onchange="togglePlatformField()">
 				@{
-					foreach (var kategoria in Model.slownik.kategorieLista)
+					foreach (var kategoria in Model.kategorie.slownik)
 					{
 						if (kategoria == Model.produktInfo.kategoria)
 						{
@@ -56,7 +56,7 @@
 		<div class="col-sm-6">
 			<select id="platforma" name="platforma" class="form-control" value="@Model.produktInfo.platforma">
 				@{
-					foreach (var platforma in Model.slownik.platformyLista)
+					foreach (var platforma in Model.platformy.slownik)
 					{
 						if (platforma == Model.produktInfo.platforma)
 						{

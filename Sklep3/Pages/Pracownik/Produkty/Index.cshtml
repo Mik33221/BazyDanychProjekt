@@ -14,7 +14,7 @@
 	<select id="kategoria" name="kategoria" class="form-select form-select-sm" onchange="togglePlatformField()">
 		<option value="">Wszystkie</option>
 		@{
-			foreach (var kategoria in Model.slownik.kategorieLista)
+			foreach (var kategoria in Model.kategorie.slownik)
 			{
 				if (kategoria == Model.aktualnaKategoria)
 				{
@@ -34,9 +34,8 @@
 	<div id="platformField" style="display:none; margin-top: 10px;">
 		<label for="platforma">Wybierz platformę:</label>
 		<select id="platforma" name="platforma" class="form-select form-select-sm">
-			<option value="">Wszystkie</option>
 			@{
-				foreach (var platforma in Model.slownik.platformyLista)
+				foreach (var platforma in Model.platformy.slownik)
 				{
 					if (platforma == Model.aktualnaPlatforma)
 					{

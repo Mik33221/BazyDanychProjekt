@@ -9,14 +9,13 @@ namespace Sklep3.Pages.Pracownik.Produkty
     public class EditModel : PageModel
     {
         public ProduktInfo produktInfo = new ProduktInfo();
-        public Slownik slownik = new Slownik();
+        public Slownik kategorie = new Slownik("kategorie");
+        public Slownik platformy = new Slownik("platformy");
         public string errorMessage = "";
         public string successMessage = "";
 
         public void OnGet()
         {
-            slownik.pobierzSlowniki();
-
             string id = Request.Query["id"];
 
             try
@@ -74,7 +73,6 @@ namespace Sklep3.Pages.Pracownik.Produkty
             errorMessage = produktInfo.sprawdzPoprawnoscDanych();
             if (errorMessage.Length > 0)
             {
-                slownik.pobierzSlowniki(); // Wczytaj ponownie słowniki
 				return;
             }
 

@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
+using Sklep3.Pages.Shared;
 
 namespace Sklep3.Pages.Pracownik.Zamowienia
 {
     public class IndexModel : PageModel
     {
 		public List<ZamowienieInfo> ZamowieniaLista = new List<ZamowienieInfo>();
+		public Slownik stany = new Slownik("stany");
+
+		public string aktualnyStan;
 		public string aktualneSortowanie;
 		public string aktualnyKierunekSortowania;
 
@@ -23,6 +27,7 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 				{
 					connection.Open();
 
+					aktualnyStan = Request.Query["stan"];
 					aktualneSortowanie = Request.Query["sortowanie"];
 					aktualnyKierunekSortowania = Request.Query["kierunek"];
 
@@ -30,6 +35,9 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
+						if (!string.IsNullOrEmpty(aktualnyStan))
+							command.Parameters.AddWithValue("@stan", aktualnyStan);
+
 						if (!string.IsNullOrEmpty(aktualneSortowanie))
 							command.Parameters.AddWithValue("@sortowanie", aktualneSortowanie);
 
@@ -65,6 +73,9 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 		private string zapytanieSQL()
 		{
 			string sql = "SELECT * FROM zamowienia_view";
+
+			if (!string.IsNullOrEmpty(aktualnyStan))
+				sql += " WHERE stan = @stan";
 
 			if (!string.IsNullOrEmpty(aktualneSortowanie))
 			{
