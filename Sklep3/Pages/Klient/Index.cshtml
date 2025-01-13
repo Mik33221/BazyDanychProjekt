@@ -119,7 +119,14 @@
 				<td>@item.platforma</td>
 				<td>@item.cena</td>
 				<td>
-					<a class="btn btn-outline-success btn-sm" href="/Klient/ToCart?id=@item.id">Do koszyka</a>
+					@if (int.Parse(item.ilosc) < 1)
+					{
+						<button class="btn btn-outline-success btn-sm" disabled>Do koszyka</button>
+					}
+					else
+					{
+						<a class="btn btn-outline-success btn-sm" href="/Klient/ToCart?id=@item.id">Do koszyka</a>
+					}
 				</td>
 			</tr>
 		}
