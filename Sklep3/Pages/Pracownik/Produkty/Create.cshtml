@@ -31,9 +31,18 @@
 		<div class="col-sm-6">
 			<select id="kategoria" name="kategoria" class="form-control" onchange="togglePlatformField()">
 				@{
-					foreach (var kategoria in Model.slownik.kategorieLista)
+					foreach (var kategoria in Model.kategorie.slownik)
 					{
-							@:<option value="@kategoria">@kategoria</option>
+						if (kategoria == Model.produktInfo.kategoria)
+						{
+							@:
+							<option value="@kategoria" selected>@kategoria</option>
+						}
+						else
+						{
+							@:
+							<option value="@kategoria">@kategoria</option>
+						}
 					}
 				}
 			</select>
@@ -44,9 +53,18 @@
 		<div class="col-sm-6">
 			<select id="platforma" name="platforma" class="form-control">
 				@{
-					foreach (var platforma in Model.slownik.platformyLista)
+					foreach (var platforma in Model.platformy.slownik)
 					{
-							@:<option value="@platforma">@platforma</option>
+						if (platforma == Model.produktInfo.platforma)
+						{
+							@:
+							<option value="@platforma" selected>@platforma</option>
+						}
+						else
+						{
+							@:
+							<option value="@platforma">@platforma</option>
+						}
 					}
 				}
 			</select>

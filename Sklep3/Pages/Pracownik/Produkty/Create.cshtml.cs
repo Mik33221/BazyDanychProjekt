@@ -8,29 +8,13 @@ namespace Sklep3.Pages.Pracownik.Produkty
     public class CreateModel : PageModel
     {
         public ProduktInfo produktInfo = new ProduktInfo();
-        public Slownik slownik = new Slownik();
+        public Slownik kategorie = new Slownik("kategorie");
+        public Slownik platformy = new Slownik("platformy");
+
         public string errorMessage = "";
         public string successMessage = "";
         public void OnGet()
         {
-            try
-            {
-                String connectionString = "Server=localhost;" +
-                                          "Database=sklep;" +
-                                          "Uid=root;" +
-                                          "Pwd=bazunia;";
-
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
-                {
-                    connection.Open();
-                    slownik.pobierzKategorie(connection);
-                    slownik.pobierzPlatformy(connection);
-                }
-            }
-			catch (Exception ex)
-			{
-				Console.WriteLine("Exception: " + ex.ToString());
-			}
 		}
 
         public void OnPost()
@@ -41,16 +25,14 @@ namespace Sklep3.Pages.Pracownik.Produkty
             produktInfo.platforma = Request.Form["platforma"];
             produktInfo.cena = Request.Form["cena"];
 
-            if (produktInfo.nazwa.Length == 0 || produktInfo.ilosc.Length == 0 ||
-                produktInfo.kategoria.Length == 0 || produktInfo.cena.Length == 0)
-            {
-                errorMessage = "Wszystkie pola są wymagane";
-				OnGet(); // Wczytaj ponownie słowniki
+			errorMessage = produktInfo.sprawdzPoprawnoscDanych();
+			if (errorMessage.Length > 0)
+			{
 				return;
-            }
+			}
 
-            //dodaj produkt do bazy danych
-            try
+			//dodaj produkt do bazy danych
+			try
             {
                 string connectionString = "Server=localhost;" +
                                           "Database=sklep;" +

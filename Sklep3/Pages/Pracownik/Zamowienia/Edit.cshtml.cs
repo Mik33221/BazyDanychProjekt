@@ -2,12 +2,14 @@ using System.Net.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
+using Sklep3.Pages.Shared;
 
 namespace Sklep3.Pages.Pracownik.Zamowienia
 {
     public class EditModel : PageModel
     {
 		public ZamowienieInfo zamowienieInfo = new ZamowienieInfo();
+		public Slownik stany = new Slownik("stany");
 		public string errorMessage = "";
 		public string successMessage = "";
 

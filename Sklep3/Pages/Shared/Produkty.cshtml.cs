@@ -7,10 +7,13 @@ namespace Sklep3.Pages.Shared
 	public class ProduktyModel : PageModel
 	{
 		public List<ProduktInfo> produktyLista = new List<ProduktInfo>();
-		public Slownik slownik = new Slownik();
+		public Slownik kategorie = new Slownik("kategorie");
+		public Slownik platformy = new Slownik("platformy");
 
 		public string aktualnaKategoria;
 		public string aktualnaPlatforma;
+		public string aktualneSortowanie;
+		public string aktualnyKierunekSortowania;
 
 		public void OnGet()
 		{
@@ -24,25 +27,28 @@ namespace Sklep3.Pages.Shared
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					slownik.pobierzKategorie(connection);
-					slownik.pobierzPlatformy(connection);
 
 					aktualnaKategoria = Request.Query["kategoria"];
 					aktualnaPlatforma = Request.Query["platforma"];
+					aktualneSortowanie = Request.Query["sortowanie"];
+					aktualnyKierunekSortowania = Request.Query["kierunek"];
 
 					String sql = zapytanieSQL();
-
 
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
 						if (!string.IsNullOrEmpty(aktualnaKategoria))
-						{
 							command.Parameters.AddWithValue("@kategoria", aktualnaKategoria);
-						}
+
 						if (!string.IsNullOrEmpty(aktualnaPlatforma))
-						{
 							command.Parameters.AddWithValue("@platforma", aktualnaPlatforma);
-						}
+
+						if (!string.IsNullOrEmpty(aktualneSortowanie))
+							command.Parameters.AddWithValue("@sortowanie", aktualneSortowanie);
+
+						if (!string.IsNullOrEmpty(aktualnyKierunekSortowania))
+							command.Parameters.AddWithValue("@kierunek", aktualnyKierunekSortowania);
+						
 
 						using (MySqlDataReader reader = command.ExecuteReader())
 						{
@@ -79,23 +85,23 @@ namespace Sklep3.Pages.Shared
 
 		private string zapytanieSQL()
 		{
+			string sql = "SELECT * FROM produkty_view";
 
-			if (string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
+			if (!string.IsNullOrEmpty(aktualnaKategoria))
+				sql += " WHERE kategoria = @kategoria";
+
+			if (!string.IsNullOrEmpty(aktualnaPlatforma))
+				sql += " AND platforma = @platforma";
+
+			if (!string.IsNullOrEmpty(aktualneSortowanie))
 			{
-				return "SELECT * FROM produkty_view";
+				sql += " ORDER BY " + aktualneSortowanie;
+				if (aktualnyKierunekSortowania == "Malejąco")
+					sql += " DESC";
 			}
 
-			if (!string.IsNullOrEmpty(aktualnaKategoria) && string.IsNullOrEmpty(aktualnaPlatforma))
-			{
-				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria";
-			}
-
-			if (!string.IsNullOrEmpty(aktualnaKategoria) && !string.IsNullOrEmpty(aktualnaPlatforma))
-			{
-				return "SELECT * FROM produkty_view WHERE kategoria = @kategoria AND platforma = @platforma";
-			}
-
-			return "SELECT * FROM produkty_view";
+			Console.WriteLine(sql);
+			return sql;
 		}
 	}
 
@@ -107,46 +113,75 @@ namespace Sklep3.Pages.Shared
 		public string kategoria;
 		public string platforma;
 		public string cena;
+
+		public string sprawdzPoprawnoscDanych()
+		{
+			string error = "";
+			if (nazwa.Length == 0 || ilosc.Length == 0 || kategoria.Length == 0 || cena.Length == 0)
+				error += "Wszystkie pola są wymagane. ";
+
+			if (!UInt32.TryParse(ilosc, out _))
+				error += "Ilość musi myć liczbą całkowitą dodatnią. ";
+
+
+			if (!decimal.TryParse(cena, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out _) || cena[0] == '-')
+			{
+				error += "Cena musi być liczbą dodatnią z maksymalnie dwoma cyframi po przecinku. ";
+			}
+			else
+			{	
+				cena = cena.Replace(',', '.');
+				string[] parts = cena.Split('.');
+
+				if (parts.Length == 2 && parts[1].Length > 2)
+					error += "Cena musi być liczbą z maksymalnie dwoma cyframi po przecinku. ";
+			}
+
+			return error;
+		}
 	}
 
 	public class Slownik
 	{
-		public List<string> kategorieLista;
-		public List<string> platformyLista;
+		public List<string> slownik;
+        private string baza;
 
-		public Slownik()
+		public Slownik(string baza)
 		{
-			kategorieLista = new List<string>();
-			platformyLista = new List<string>();
+			slownik = new List<string>();
+			this.baza = baza;
+			pobierzSlownik();
 		}
 
-		public void pobierzKategorie(MySqlConnection connection)
+		public void pobierzSlownik()
 		{
-			string sqlKategorie = "SELECT * FROM kategorie";
-			using (MySqlCommand command = new MySqlCommand(sqlKategorie, connection))
+			try
 			{
-				using (MySqlDataReader reader = command.ExecuteReader())
+				String connectionString = "Server=localhost;" +
+										  "Database=sklep;" +
+										  "Uid=root;" +
+										  "Pwd=bazunia;";
+
+				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
-					while (reader.Read())
-					{
-						kategorieLista.Add(reader.GetString(0));
-					}
-				}
+					connection.Open();
+
+                    string sql = "SELECT * FROM " + baza;
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                slownik.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
 			}
-		}
-
-		public void pobierzPlatformy(MySqlConnection connection)
-		{
-			string sqlPlatformy = "SELECT * FROM platformy";
-			using (MySqlCommand command = new MySqlCommand(sqlPlatformy, connection))
+			catch (Exception ex)
 			{
-				using (MySqlDataReader reader = command.ExecuteReader())
-				{
-					while (reader.Read())
-					{
-						platformyLista.Add(reader.GetString(0));
-					}
-				}
+				Console.WriteLine("Exception: " + ex.ToString());
 			}
 		}
 	}
