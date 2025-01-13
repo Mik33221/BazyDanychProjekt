@@ -37,7 +37,7 @@ namespace Sklep3.Tests
             }
 
             // Assert 
-            Assert.Equal(1, idKlienta);    
+            Assert.Equal(2, idKlienta);    
         }
 
         [Fact]

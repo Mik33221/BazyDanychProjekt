@@ -20,7 +20,7 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					string sql = "SELECT * FROM zamowienia_view";
+					string sql = "SELECT * FROM zamowienia_view ORDER BY id_zamówienia";
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
 						using (MySqlDataReader reader = command.ExecuteReader())
