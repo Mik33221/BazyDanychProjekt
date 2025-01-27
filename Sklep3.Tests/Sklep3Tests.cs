@@ -6,39 +6,47 @@ using Sklep3.Pages.Shared;
 namespace Sklep3.Tests
 {
 	public class Sklep3Tests
-	{
-		[Fact]
-		public void pobierzIDklientaTestIstnieje()
-		{
+	{   
+        private int zwrocIDklienta(string imie, string nazwisko, string mail)
+        {
 			// Arrange
 			CheckoutModel checkoutModel = new CheckoutModel();
-            checkoutModel.zamowienie.imie = "Andrzej";
-            checkoutModel.zamowienie.nazwisko = "Kowalski";
-            checkoutModel.zamowienie.mail = "andKow.123";
+			checkoutModel.zamowienie.imie = imie;
+			checkoutModel.zamowienie.nazwisko = nazwisko;
+			checkoutModel.zamowienie.mail = mail;
 
-            // Act
-            String connectionString = "Server=localhost;Database=sklep;Uid=root;Pwd=bazunia;";
-            int idKlienta;
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
+			// Act
+			String connectionString = "Server=localhost;Database=sklep;Uid=root;Pwd=bazunia;";
+			int idKlienta;
+			using (MySqlConnection connection = new MySqlConnection(connectionString))
+			{
+				connection.Open();
 
-                // Rozpocznij transakcjê
-                using (MySqlTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        idKlienta = checkoutModel.pobierzIDklienta(connection, transaction);
-                    }
-                    catch (Exception ex)
-                    {
-                        return;
-                    }
-                }
-            }
+				// Rozpocznij transakcjê
+				using (MySqlTransaction transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						idKlienta = checkoutModel.pobierzIDklienta(connection, transaction);
+					}
+					catch (Exception ex)
+					{
+						return -10;
+					}
+				}
+			}
+            return idKlienta;
+		}
 
-            // Assert 
-            Assert.Equal(2, idKlienta);    
+		[Fact]
+		public void pobierzIDklientaTest()
+		{
+            int poprawny = zwrocIDklienta("Andrzej", "Kowalski", "andKow.123");
+            int niepoprawny = zwrocIDklienta("Andrzej", "Kowalski", "ako");
+
+			// Assert 
+			Assert.Equal(1, poprawny);
+            Assert.Equal(-1, niepoprawny);
         }
 
         [Fact]
@@ -81,15 +89,14 @@ namespace Sklep3.Tests
         {
             // Arrange
             CheckoutModel checkoutModel = new CheckoutModel();
-            checkoutModel.zamowienie.imie = "Andrzej";
-            checkoutModel.zamowienie.nazwisko = "Kowalski";
-            checkoutModel.zamowienie.mail = "and";
 
             // Act
-            bool res = checkoutModel.czyKlientIstnieje(2);
+            bool tak = checkoutModel.czyKlientIstnieje(2);
+            bool nie = checkoutModel.czyKlientIstnieje(-1);
 
             // Assert
-            Assert.True(res);
+            Assert.True(tak);
+            Assert.False(nie);
         }
 
         [Fact]

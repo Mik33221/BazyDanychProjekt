@@ -1,7 +1,7 @@
 ﻿@page
 @model Sklep3.Pages.Pracownik.Zamowienia.IndexModel
 @{
-    string lastId = null; // Przechowuje ostatnie wyświetlone ID
+	string lastId = null; // Przechowuje ostatnie wyświetlone ID
 }
 
 <br />
@@ -34,7 +34,7 @@
 	<label for="sortowanie">Sortowanie:</label>
 	<select id="sortowanie" name="sortowanie" class="form-select form-select-sm">
 		@{
-			var sort = new List<string> { "id_zamówienia", "nazwa_produktu", "adres", "data" };
+			var sort = new List<string> { "ID_zamowienia", "Nazwa_produktu", "Adres", "Data" };
 			foreach (var opcja in sort)
 			{
 				if (opcja == Model.aktualneSortowanie)
@@ -75,59 +75,46 @@
 </form>
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>ID Zamówienia</th>
-            <th>Nazwa produktu</th>
-            <th>Ilość</th>
-            <th>Stan</th>
-            <th>Adres</th>
-            <th>Data</th>
-            <th>Akcje</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ZamowieniaLista)
-        {
-            <tr>
-                <td>
-                    @if (lastId != item.id)
-                    {
-                        @item.id
-                    }
-                </td>
-                <td>@item.nazwaProduktu</td>
-                <td>@item.ilosc</td>
-                <td>
-                    @if (lastId != item.id)
-                    {
-                        @item.stan
-                    }
-                </td>
-                <td>
-                    @if (lastId != item.id)
-                    {
-                        @item.adres
-                    }
-                </td>
-                <td>
-                    @if (lastId != item.id)
-                    {
-                        @item.data
-                    }
-                </td>
-                <td>
-                    @if (lastId != item.id)
-                    {
-                        <a class="btn btn-outline-primary btn-sm" href="/Pracownik/Zamowienia/Edit?id=@item.id">Edytuj</a>
-                        <a class="btn btn-outline-danger btn-sm" href="/Pracownik/Zamowienia/Delete?id=@item.id">Usuń</a>
-                    }
-                </td>
+	<thead>
+		<tr>
+			<th>ID Zamówienia</th>
+			<th>Nazwa produktu</th>
+			<th>Ilość</th>
+			<th>Stan</th>
+			<th>Adres</th>
+			<th>Data</th>
+			<th>Akcje</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.ZamowieniaLista)
+		{
+			<tr>
+				@if (lastId != item.id)
+				{
+
+					<td>@item.id</td>
+					<td>@item.nazwaProduktu</td>
+					<td>@item.ilosc</td>
+					<td>@item.stan</td>
+					<td>@item.adres</td>
+					<td>@item.data</td>
+					<td>
+						<a class="btn btn-outline-primary btn-sm" href="/Pracownik/Zamowienia/Edit?id=@item.id">Edytuj</a>
+						<a class="btn btn-outline-danger btn-sm" href="/Pracownik/Zamowienia/Delete?id=@item.id">Usuń</a>
+					</td>
+					lastId = item.id; // Zaktualizuj ostatnie ID
+				}
+				else
+				{
+					<td></td>
+					<td>@item.nazwaProduktu</td>
+					<td>@item.ilosc</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				}
             </tr>
-            @if (lastId != item.id)
-            {
-                lastId = item.id; // Zaktualizuj ostatnie ID
-            }
         }
     </tbody>
 </table>

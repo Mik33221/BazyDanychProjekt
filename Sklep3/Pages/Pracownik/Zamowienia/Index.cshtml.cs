@@ -75,7 +75,7 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 			string sql = "SELECT * FROM zamowienia_view";
 
 			if (!string.IsNullOrEmpty(aktualnyStan))
-				sql += " WHERE stan = @stan";
+				sql += " WHERE Stan = @stan";
 
 			if (!string.IsNullOrEmpty(aktualneSortowanie))
 			{
@@ -83,8 +83,8 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 				if (aktualnyKierunekSortowania == "Malej¹co")
 					sql += " DESC";
 				
-				if (aktualneSortowanie != "id_zamówienia")
-					sql += ", id_zamówienia";
+				if (aktualneSortowanie != "ID_zamowienia")
+					sql += ", ID_zamowienia";
 			}
 
 			Console.WriteLine(sql);

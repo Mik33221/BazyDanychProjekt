@@ -42,7 +42,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 {
                     connection.Open();
 					string sql = "Insert INTO produkty_view" +
-                        "(nazwa, ilosc, kategoria, platforma, cena) VALUES " +
+                        "(Nazwa, Ilość, Kategoria, Platforma, Cena) VALUES " +
                         "(@nazwa, @ilosc, @kategoria, @platforma, @cena);";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))

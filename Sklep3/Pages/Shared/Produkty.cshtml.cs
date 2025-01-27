@@ -88,10 +88,10 @@ namespace Sklep3.Pages.Shared
 			string sql = "SELECT * FROM produkty_view";
 
 			if (!string.IsNullOrEmpty(aktualnaKategoria))
-				sql += " WHERE kategoria = @kategoria";
+				sql += " WHERE Kategoria = @kategoria";
 
 			if (!string.IsNullOrEmpty(aktualnaPlatforma))
-				sql += " AND platforma = @platforma";
+				sql += " AND Platforma = @platforma";
 
 			if (!string.IsNullOrEmpty(aktualneSortowanie))
 			{

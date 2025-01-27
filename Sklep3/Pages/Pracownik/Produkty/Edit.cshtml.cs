@@ -27,7 +27,7 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = "SELECT * FROM produkty_view WHERE idproduktu=@id";
+                    string sql = "SELECT * FROM produkty_view WHERE ID_produktu=@id";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
@@ -86,8 +86,8 @@ namespace Sklep3.Pages.Pracownik.Produkty
                 {
                     connection.Open();
                     string sql = "UPDATE produkty_view " +
-                        "SET nazwa=@nazwa, ilosc=@ilosc, kategoria=@kategoria, platforma=@platforma, cena=@cena " +
-                        "WHERE idproduktu=@id";
+                        "SET Nazwa=@nazwa, Ilość=@ilosc, Kategoria=@kategoria, Platforma=@platforma, Cena=@cena " +
+                        "WHERE ID_produktu=@id";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {

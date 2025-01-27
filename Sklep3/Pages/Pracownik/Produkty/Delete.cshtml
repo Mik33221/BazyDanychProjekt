@@ -11,7 +11,7 @@
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             connection.Open();
-            String sql = "DELETE FROM produkty_view WHERE idproduktu=@id";
+            String sql = "DELETE FROM produkty_view WHERE ID_produktu=@id";
 
             using (MySqlCommand command = new MySqlCommand(sql, connection))
             {

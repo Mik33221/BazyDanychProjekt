@@ -26,7 +26,7 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 				using (MySqlConnection connection = new MySqlConnection(connectionString))
 				{
 					connection.Open();
-					string sql = "SELECT stan FROM zamowienia_view WHERE id_zamówienia=@id";
+					string sql = "SELECT Stan FROM zamowienia_view WHERE ID_zamowienia=@id";
 
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{
@@ -69,7 +69,7 @@ namespace Sklep3.Pages.Pracownik.Zamowienia
 				{
 					connection.Open();
 					string sql = "UPDATE zamowienia_view " +
-						"SET stan=@stan WHERE id_zamówienia=@id";
+						"SET Stan=@stan WHERE ID_zamowienia=@id";
 
 					using (MySqlCommand command = new MySqlCommand(sql, connection))
 					{

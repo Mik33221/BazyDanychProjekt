@@ -29,7 +29,7 @@ namespace Sklep3.Pages.Klient
                     using (MySqlConnection connection = new MySqlConnection(connectionString))
                     {
                         connection.Open();
-                        String sql = "SELECT * FROM produkty_view WHERE idproduktu IN (" + string.Join(",", cartItems.Select(x => x.ProductId)) + ")";
+                        String sql = "SELECT * FROM produkty_view WHERE ID_produktu IN (" + string.Join(",", cartItems.Select(x => x.ProductId)) + ")";
                         using (MySqlCommand command = new MySqlCommand(sql, connection))
                         {
                             using (MySqlDataReader reader = command.ExecuteReader())
